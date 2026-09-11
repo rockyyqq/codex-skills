@@ -1,0 +1,4 @@
+interface:
+  display_name: "Role Split"
+  short_description: "Independent roles for verified, higher-quality results"
+  default_prompt: "Use $role-split to split this task into independent roles, run them, and integrate their findings into the finished work."

@@ -1,0 +1,25 @@
+# Python bytecode from the wealth-advisory scripts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Local run output - never commit household data or generated overlays
+prices.json
+*_report.json
+*_report.md
+output/
+.venv/
+venv/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Secrets
+.env
+*.token
+.env.*

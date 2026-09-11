@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wealth Advisory"
+  short_description: "Singapore planning, projections and rebalancing drafts"
+  default_prompt: "Use $wealth-advisory to build a retirement projection and planning pack for a Singapore-based household."

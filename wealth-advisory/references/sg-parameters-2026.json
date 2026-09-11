@@ -1,0 +1,135 @@
+{
+  "_note": "Singapore planning parameters. Each entry names its official source and the date it was confirmed. Entries with \"verified_on\": null were entered from general knowledge and have NOT been confirmed against the source - check them before any output reaches a client. Do not add a parameter without a source.",
+  "tax_year": "YA 2026",
+  "last_reviewed": "2026-09-10",
+  "parameters": {
+    "income_tax_brackets_resident_individual": {
+      "description": "Progressive resident individual income tax brackets, chargeable income basis.",
+      "value": [
+        { "min": 0, "max": 20000, "rate": 0.0 },
+        { "min": 20000, "max": 30000, "rate": 0.02 },
+        { "min": 30000, "max": 40000, "rate": 0.035 },
+        { "min": 40000, "max": 80000, "rate": 0.07 },
+        { "min": 80000, "max": 120000, "rate": 0.115 },
+        { "min": 120000, "max": 160000, "rate": 0.15 },
+        { "min": 160000, "max": 200000, "rate": 0.18 },
+        { "min": 200000, "max": 240000, "rate": 0.19 },
+        { "min": 240000, "max": 280000, "rate": 0.195 },
+        { "min": 280000, "max": 320000, "rate": 0.2 },
+        { "min": 320000, "max": 500000, "rate": 0.22 },
+        { "min": 500000, "max": 1000000, "rate": 0.23 },
+        { "min": 1000000, "max": null, "rate": 0.24 }
+      ],
+      "as_of": "YA 2024 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
+      "verified_on": "2026-09-10"
+    },
+    "cpf_ordinary_wage_ceiling_monthly": {
+      "description": "Monthly Ordinary Wage ceiling for CPF contributions.",
+      "value": 8000,
+      "as_of": "2026-01-01",
+      "source": "https://www.cpf.gov.sg/content/dam/web/employer/employer-obligations/documents/CPFcontributionratesfrom1Jan2026.pdf",
+      "verified_on": "2026-09-10"
+    },
+    "cpf_contribution_rates_percent": {
+      "description": "Total, employer and employee CPF contribution rates by age band for citizens and PRs (third year onwards) with monthly wages above $750.",
+      "value": {
+        "55_and_below": { "total": 37.0, "employer": 17.0, "employee": 20.0 },
+        "above_55_to_60": { "total": 34.0, "employer": 16.0, "employee": 18.0 },
+        "above_60_to_65": { "total": 25.0, "employer": 12.5, "employee": 12.5 },
+        "above_65_to_70": { "total": 16.5, "employer": 9.0, "employee": 7.5 },
+        "above_70": { "total": 12.5, "employer": 7.5, "employee": 5.0 }
+      },
+      "as_of": "2026-01-01",
+      "source": "https://www.cpf.gov.sg/content/dam/web/employer/employer-obligations/documents/CPFcontributionratesfrom1Jan2026.pdf",
+      "verified_on": "2026-09-10",
+      "note": "Rates for senior workers are scheduled to rise again from 1 January 2027."
+    },
+    "cpf_annual_salary_ceiling": {
+      "description": "Annual Salary Ceiling. The Additional Wage ceiling for a year equals this figure less the Ordinary Wages already subject to CPF that year.",
+      "value": 102000,
+      "as_of": null,
+      "source": "https://www.cpf.gov.sg/employer/employer-obligations/how-much-cpf-contributions-to-pay",
+      "verified_on": null
+    },
+    "cpf_interest_rates_percent": {
+      "description": "Annual interest credited to each CPF account, before the additional interest tiers.",
+      "value": { "ordinary_account": 2.5, "special_account": 4.0, "medisave_account": 4.0, "retirement_account": 4.0 },
+      "as_of": null,
+      "source": "https://www.cpf.gov.sg/member/growing-your-savings/earning-interest/interest-rates",
+      "verified_on": null,
+      "note": "Extra interest is paid on the first tranche of combined balances, with a further tier from age 55. Floor rates have been held for several years but the additional tiers change."
+    },
+    "srs_contribution_cap_citizen_pr": {
+      "description": "Annual SRS contribution cap for Singapore citizens and permanent residents. Contributions up to the cap are tax-relieving.",
+      "value": 15300,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
+      "verified_on": null
+    },
+    "srs_contribution_cap_foreigner": {
+      "description": "Annual SRS contribution cap for foreigners.",
+      "value": 35700,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
+      "verified_on": null
+    },
+    "srs_taxable_fraction_on_qualifying_withdrawal": {
+      "description": "Fraction of an SRS withdrawal that is taxable when taken from the statutory retirement age onwards.",
+      "value": 0.5,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
+      "verified_on": null
+    },
+    "srs_withdrawal_window_years": {
+      "description": "Number of years over which SRS withdrawals can be spread, starting at the statutory retirement age.",
+      "value": 10,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
+      "verified_on": null
+    },
+    "srs_early_withdrawal_penalty_percent": {
+      "description": "Penalty on the amount withdrawn from SRS before the statutory retirement age. The withdrawn amount is also fully taxable.",
+      "value": 5.0,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
+      "verified_on": null
+    },
+    "statutory_retirement_age": {
+      "description": "Statutory retirement age, which sets the earliest date for penalty-free SRS withdrawal.",
+      "value": 63,
+      "as_of": null,
+      "source": "https://www.mom.gov.sg/employment-practices/retirement/statutory-retirement-age",
+      "verified_on": null,
+      "note": "Scheduled to increase to 64 from 1 July 2026 and to 65 from 2030. Confirm which applies to the plan year."
+    },
+    "cpf_topup_relief_cap_self": {
+      "description": "Maximum tax relief for cash top-ups to the client's own CPF Retirement Account or Special Account.",
+      "value": 8000,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": null
+    },
+    "cpf_topup_relief_cap_family": {
+      "description": "Maximum tax relief for cash top-ups to the CPF account of a spouse, parent, or sibling who meets the eligibility conditions.",
+      "value": 8000,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": null
+    },
+    "insurance_relief_cap_self": {
+      "description": "Maximum tax relief for life insurance premiums paid by the client, including a sub-limit for premiums on MediSave-approved plans.",
+      "value": 5000,
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/life-insurance-relief",
+      "verified_on": null
+    },
+    "earned_income_relief": {
+      "description": "Automatic relief on earned income, scaled by age band.",
+      "value": { "below_55": 1000, "55_to_59": 6000, "60_and_above": 8000 },
+      "as_of": null,
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/earned-income-relief",
+      "verified_on": null
+    }
+  }
+}
