@@ -12,6 +12,27 @@ This skill is used for a household's own planning rather than a client book. The
 4. **Scope and status statement** - a draft prepared for the household to decide on, not licensed advice, and a named next step for a professional where one is needed.
 5. **Risk mandate** - the limits the portfolio is measured against, in the household's own words.
 6. **Protection status** - what the death, disability, illness and care layers currently cover, and where the gaps are.
+7. **Tax residency and relief position** - each spouse's residency for the plan year, the reliefs claimed against the $80,000 cap, and any contribution that would fall above it. Residency decides whether any relief exists at all, so this comes before the numbers that depend on it.
+8. **Goals with dates and costs** - each goal funded and tested on its own date, not only inside the retirement projection.
+
+## The recommendation record
+
+A recommendation is not a sentence. Each one carries, beside it rather than in an
+appendix:
+
+| Field | What belongs there |
+|---|---|
+| Recommendation | The decision being put to the household, in one sentence |
+| Rationale | Why this, in terms of their stated goals and constraints |
+| Expected benefit | In dollars or probability, with the assumption it depends on |
+| Risk | What could make it wrong, including the case where it works but does not help |
+| Alternatives considered | What else was on the table and why it was not chosen |
+| Assumptions | Every figure it rests on, labelled as a fact or an assumption |
+
+`scripts/validate_deliverable.py` fails a document that carries recommendations
+without alternatives and assumptions beside them. Where a recommendation needs a
+licence to act on - a specific security or insurance product - the record stops at
+the analysis and names the professional who acts.
 
 ## Retirement planning pack
 

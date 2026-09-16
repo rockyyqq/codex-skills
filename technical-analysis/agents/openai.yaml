@@ -1,0 +1,3 @@
+interface:
+  display_name: "Technical Analysis"
+  short_description: "Read a chart, size a position, state the limits"

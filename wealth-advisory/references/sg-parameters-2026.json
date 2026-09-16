@@ -1,7 +1,7 @@
 {
-  "_note": "Singapore planning parameters. Each entry names its official source and the date it was confirmed. Entries with \"verified_on\": null were entered from general knowledge and have NOT been confirmed against the source - check them before any output reaches a client. Do not add a parameter without a source.",
+  "_note": "Singapore planning parameters. Each entry names its official source and the date it was confirmed. Entries with \"verified_on\": null were entered from general knowledge and have NOT been confirmed against the source - check them before any output reaches a client. Do not add a parameter without a source. Run scripts/check_params.py to list every unverified or overdue entry in one pass; it reads the whole file, not only the parameters a single script happened to use.",
   "tax_year": "YA 2026",
-  "last_reviewed": "2026-09-10",
+  "last_reviewed": "2026-09-13",
   "parameters": {
     "income_tax_brackets_resident_individual": {
       "description": "Progressive resident individual income tax brackets, chargeable income basis.",
@@ -22,7 +22,74 @@
       ],
       "as_of": "YA 2024 onwards",
       "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
-      "verified_on": "2026-09-10"
+      "verified_on": "2026-09-13"
+    },
+    "income_tax_gross_payable_checkpoints": {
+      "description": "IRAS's own cumulative gross tax payable at the top of each band of the YA 2024 onwards table. Cross-check any bracket arithmetic against these figures before presenting a tax computation.",
+      "value": [
+        { "chargeable_income": 20000, "gross_tax": 0 },
+        { "chargeable_income": 30000, "gross_tax": 200 },
+        { "chargeable_income": 40000, "gross_tax": 550 },
+        { "chargeable_income": 80000, "gross_tax": 3350 },
+        { "chargeable_income": 120000, "gross_tax": 7950 },
+        { "chargeable_income": 160000, "gross_tax": 13950 },
+        { "chargeable_income": 200000, "gross_tax": 21150 },
+        { "chargeable_income": 240000, "gross_tax": 28750 },
+        { "chargeable_income": 280000, "gross_tax": 36550 },
+        { "chargeable_income": 320000, "gross_tax": 44550 },
+        { "chargeable_income": 500000, "gross_tax": 84150 },
+        { "chargeable_income": 1000000, "gross_tax": 199150 }
+      ],
+      "as_of": "YA 2024 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
+      "verified_on": "2026-09-13"
+    },
+    "personal_income_tax_relief_cap": {
+      "description": "Overall cap on the total personal income tax reliefs claimable by one individual in a Year of Assessment. It applies to all personal reliefs claimed together, including relief on SRS contributions and CPF relief, so a relief that takes the total past the cap delivers no further tax saving.",
+      "value": 80000,
+      "as_of": "YA 2018 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs",
+      "verified_on": "2026-09-13"
+    },
+    "income_tax_resident_rebate": {
+      "description": "Personal income tax rebate for resident individuals, applied to tax payable after reliefs. Only years with a legislated rebate are listed. IRAS states none for YA 2026, so it is recorded as nil rather than assumed.",
+      "value": {
+        "YA 2024": { "percent_of_tax_payable": 50, "cap": 200 },
+        "YA 2025": { "percent_of_tax_payable": 60, "cap": 200 },
+        "YA 2026": null
+      },
+      "as_of": "YA 2024 to YA 2025",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
+      "verified_on": "2026-09-13",
+      "note": "Confirm against the Budget statement for the plan year before assuming a rebate applies."
+    },
+    "income_tax_non_resident": {
+      "description": "Tax on a non-resident individual. Employment income is taxed at the flat rate or the resident progressive rates, whichever produces the higher tax amount. All other income - including rental, pension and director's fees - is taxed at the flat rate.",
+      "value": {
+        "employment_income_flat_rate": 0.15,
+        "employment_income_rule": "15% flat or the resident progressive rates, whichever is the higher tax amount",
+        "other_income_flat_rate": 0.24
+      },
+      "as_of": "YA 2024 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
+      "verified_on": "2026-09-13",
+      "note": "A non-resident is not entitled to the personal reliefs, so relief planning has no application to a non-resident year. The flat rate on other income was 22% before YA 2024."
+    },
+    "withholding_tax_non_resident_individuals": {
+      "description": "Withholding tax on income of non-resident individuals, from YA 2024 onwards.",
+      "value": {
+        "non_resident_directors_remuneration_and_fees": 0.24,
+        "non_resident_professionals": "15% of gross income or 24% of net income",
+        "non_resident_public_entertainers": "15% concessionary rate",
+        "srs_withdrawals_by_non_singapore_srs_account_holders": 0.24,
+        "srs_withdrawals_concessionary_rate": 0.15,
+        "interest_commission_fees_connected_with_loans": "15% reduced final rate subject to conditions, otherwise 24%",
+        "royalties_or_lump_sums_for_movable_property": "10% reduced final rate subject to conditions, otherwise 24%"
+      },
+      "as_of": "YA 2024 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates",
+      "verified_on": "2026-09-13",
+      "note": "The 15% concessionary rate on SRS withdrawals applies where the cumulative withdrawal in the calendar year does not exceed $200,000 and the holder has no other income that year, declared on Form IR37B(1)."
     },
     "cpf_ordinary_wage_ceiling_monthly": {
       "description": "Monthly Ordinary Wage ceiling for CPF contributions.",
@@ -60,76 +127,214 @@
       "verified_on": null,
       "note": "Extra interest is paid on the first tranche of combined balances, with a further tier from age 55. Floor rates have been held for several years but the additional tiers change."
     },
+    "cpf_full_retirement_sum": {
+      "description": "Full Retirement Sum (FRS). Keyed by the Year of Assessment the cash top-up relates to, which is the year after the top-up was made. A cash top-up to a Special or Retirement Account attracts relief only up to the headroom below the FRS.",
+      "value": {
+        "ya_2026_topup_made_2025": 213000,
+        "ya_2027_topup_made_2026": 220400
+      },
+      "as_of": "YA 2026 to YA 2027",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13",
+      "note": "The FRS rises each year. Read the row for the plan year from the source rather than carrying this figure forward."
+    },
+    "cpf_basic_healthcare_sum": {
+      "description": "Basic Healthcare Sum (BHS), the cap on MediSave Account cash top-ups that can attract relief. Keyed by the Year of Assessment the top-up relates to.",
+      "value": {
+        "ya_2026_topup_made_2025": 75500,
+        "ya_2027_topup_made_2026": 79000
+      },
+      "as_of": "YA 2026 to YA 2027",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13",
+      "note": "For members below 65 the BHS is adjusted annually. Once a member reaches 65 the BHS is fixed for life - reached 65 in 2025 means a fixed $75,500."
+    },
+    "cpf_cash_topup_relief_total_cap": {
+      "description": "Maximum total CPF Cash Top-up Relief per Year of Assessment, being the self cap plus the family cap.",
+      "value": 16000,
+      "as_of": "YA 2023 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13"
+    },
+    "cpf_topup_relief_cap_self": {
+      "description": "Maximum CPF Cash Top-up Relief for cash top-ups to the client's own Special, Retirement or MediSave Account.",
+      "value": 8000,
+      "as_of": "YA 2023 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13",
+      "note": "Relief is available only on cash top-ups, not on a transfer from the client's own CPF account. A top-up to a MediSave Account is limited by the Basic Healthcare Sum rather than the Full Retirement Sum. Top-ups that attract a matching grant under the Matched Retirement Savings Scheme no longer qualify from YA 2026 (top-ups made from 1 Jan 2025), and top-ups attracting a Matched MediSave Scheme grant no longer qualify from YA 2027 (top-ups made from 1 Jan 2026)."
+    },
+    "cpf_topup_relief_cap_family": {
+      "description": "Maximum CPF Cash Top-up Relief for cash top-ups to family members, across all recipients combined.",
+      "value": 8000,
+      "as_of": "YA 2023 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13",
+      "note": "A flat $8,000 for all family members together, not $8,000 each. For a spouse or sibling recipient the dependant's income in the year before the top-up must not exceed the dependant income threshold. No relief is given where the recipient's Special or Retirement Account has already reached the Full Retirement Sum, even though a top-up may still be allowed up to the Enhanced Retirement Sum."
+    },
+    "cpf_topup_dependant_income_threshold": {
+      "description": "Income ceiling for a spouse or sibling to be a qualifying dependant for CPF Cash Top-up Relief. Measured on the year preceding the year in which the top-up is made. Counts taxable income, tax-exempt income such as bank interest, dividends and pension, and foreign-sourced income whether or not remitted.",
+      "value": 8000,
+      "as_of": "YA 2025 onwards",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
+      "verified_on": "2026-09-13",
+      "note": "Raised from $4,000 with effect from YA 2025. The threshold does not apply to top-ups for parents, grandparents or a disabled dependant."
+    },
     "srs_contribution_cap_citizen_pr": {
       "description": "Annual SRS contribution cap for Singapore citizens and permanent residents. Contributions up to the cap are tax-relieving.",
       "value": 15300,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
-      "verified_on": null
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/srs-contributions-and-tax-relief",
+      "verified_on": "2026-09-13"
     },
     "srs_contribution_cap_foreigner": {
       "description": "Annual SRS contribution cap for foreigners.",
       "value": 35700,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
-      "verified_on": null
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/srs-contributions-and-tax-relief",
+      "verified_on": "2026-09-13",
+      "note": "A foreigner must file the annual Declaration Form for SRS (For Foreigners) with the operator. On becoming a citizen or PR during the year the cap is recomputed on a pro-rata basis by the operator."
+    },
+    "srs_relief_qualifying_conditions": {
+      "description": "Conditions for SRS tax relief, stated as rules rather than amounts.",
+      "value": {
+        "must_be_tax_resident_for_the_ya": true,
+        "contribution_deadline": "31 Dec of the year of contribution, or the operator's earlier cut-off",
+        "no_relief_if_account_suspended_at_31_dec": true,
+        "no_relief_on_an_amount_withdrawn_in_the_same_year_as_contributed": true,
+        "employer_contributions": "Taxable as remuneration and declared on Form IR8A, but the individual is granted the relief for them",
+        "claim_required": false
+      },
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/srs-contributions-and-tax-relief",
+      "verified_on": "2026-09-13"
     },
     "srs_taxable_fraction_on_qualifying_withdrawal": {
-      "description": "Fraction of an SRS withdrawal that is taxable when taken from the statutory retirement age onwards.",
+      "description": "Fraction of an SRS withdrawal that is taxable when taken on or after the prescribed retirement age, and on the other penalty-free grounds that carry the 50% concession.",
       "value": 0.5,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
-      "verified_on": null
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/tax-on-srs-withdrawals",
+      "verified_on": "2026-09-13",
+      "note": "A withdrawal before the prescribed retirement age is 100% taxable and also carries the early withdrawal penalty."
     },
     "srs_withdrawal_window_years": {
-      "description": "Number of years over which SRS withdrawals can be spread, starting at the statutory retirement age.",
+      "description": "Number of years over which penalty-free SRS withdrawals can be spread, starting from the date of the first penalty-free withdrawal.",
       "value": 10,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
-      "verified_on": null
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/tax-on-srs-withdrawals",
+      "verified_on": "2026-09-13",
+      "note": "The balance is deemed withdrawn at the end of the window and 50% of it is taxable, except for life annuities where the 50% concession applies to each annuity payment for life."
     },
     "srs_early_withdrawal_penalty_percent": {
-      "description": "Penalty on the amount withdrawn from SRS before the statutory retirement age. The withdrawn amount is also fully taxable.",
+      "description": "Penalty on the amount withdrawn from SRS before the prescribed retirement age. The withdrawn amount is also fully taxable.",
       "value": 5.0,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/supplementary-retirement-scheme-(srs)",
-      "verified_on": null
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/tax-on-srs-withdrawals",
+      "verified_on": "2026-09-13",
+      "note": "The penalty does not apply to withdrawal on death, on medical grounds, on bankruptcy, or to a qualifying one-time full withdrawal by a foreigner."
+    },
+    "srs_full_withdrawal_exemption_terminal_illness_or_death": {
+      "description": "Tax exemption on SRS funds withdrawn in full on the grounds of terminal illness, or deemed withdrawn on death. The exemption is reduced by prior penalty-free withdrawals and by the years already used in the ten-year window.",
+      "value": 400000,
+      "as_of": "YA 2016 onwards",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/tax-on-srs-withdrawals",
+      "verified_on": "2026-09-13",
+      "note": "Half of any amount above the (possibly adjusted) exemption is taxable. SRS does not allow a beneficiary nomination - the balance forms part of the estate, so a will governs who receives it."
+    },
+    "srs_annual_tax_free_withdrawal_capacity": {
+      "description": "SRS withdrawal per year that is fully tax-free for a member with no other chargeable income and no other reliefs, on or after the prescribed retirement age. Half of the withdrawal is taxable, and the first $20,000 of chargeable income is taxed at nil.",
+      "value": 40000,
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/schemes/individual-income-tax/tax-on-srs-withdrawals",
+      "verified_on": "2026-09-13",
+      "note": "Over the full ten-year window this is $400,000 tax-free, but only while the member has no other taxable income and no other reliefs. Any other income uses up the nil-rate band and this figure falls."
     },
     "statutory_retirement_age": {
-      "description": "Statutory retirement age, which sets the earliest date for penalty-free SRS withdrawal.",
-      "value": 63,
-      "as_of": null,
-      "source": "https://www.mom.gov.sg/employment-practices/retirement/statutory-retirement-age",
+      "description": "Statutory retirement age, which sets the prescribed retirement age for penalty-free SRS withdrawal for a new SRS contributor.",
+      "value": 64,
+      "as_of": "2026-07-01",
+      "source": "https://www.mom.gov.sg/employment-practices/retirement",
+      "verified_on": "2026-09-13",
+      "note": "Read from the MOM retirement page on 13 September 2026: the minimum retirement age is 64 from 1 July 2026. It was 63 from 1 July 2022 and 62 before that, and the published schedule raises it to 65 from 2030 - those steps were not re-read from source today, so treat them as provisional. For an existing SRS member the age that matters is the one prevailing at the time of the FIRST contribution, which is why srs_prescribed_retirement_age_schedule exists; do not read this single value for a member who has already contributed."
+    },
+    "srs_prescribed_retirement_age_schedule": {
+      "description": "The statutory retirement age in force at the date of an SRS member's FIRST contribution. That figure, not today's, is the age at which the member may withdraw penalty-free, and later increases do not change it. scripts/srs_drawdown.py derives the member's age from this table and refuses to read the current value in its place.",
+      "value": [
+        { "from": "1900-01-01", "statutory_retirement_age": 62 },
+        { "from": "2022-07-01", "statutory_retirement_age": 63 },
+        { "from": "2026-07-01", "statutory_retirement_age": 64 },
+        { "from": "2030-01-01", "statutory_retirement_age": 65 }
+      ],
+      "as_of": "2026-07-01",
+      "source": "https://www.mom.gov.sg/employment-practices/retirement",
       "verified_on": null,
-      "note": "Scheduled to increase to 64 from 1 July 2026 and to 65 from 2030. Confirm which applies to the plan year."
+      "note": "Partially confirmed: 64 from 1 July 2026 was read from the MOM retirement page on 13 September 2026, and the IRAS SRS withdrawal page states the same transition. The 62 and 63 rows and the 2030 step come from the published Retirement and Re-employment Act schedule and were NOT re-read from a source. Confirm the whole table before a drawdown schedule is relied on."
     },
-    "cpf_topup_relief_cap_self": {
-      "description": "Maximum tax relief for cash top-ups to the client's own CPF Retirement Account or Special Account.",
-      "value": 8000,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
-      "verified_on": null
-    },
-    "cpf_topup_relief_cap_family": {
-      "description": "Maximum tax relief for cash top-ups to the CPF account of a spouse, parent, or sibling who meets the eligibility conditions.",
-      "value": 8000,
-      "as_of": null,
-      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund-(cpf)-cash-top-up-relief",
-      "verified_on": null
-    },
-    "insurance_relief_cap_self": {
-      "description": "Maximum tax relief for life insurance premiums paid by the client, including a sub-limit for premiums on MediSave-approved plans.",
-      "value": 5000,
-      "as_of": null,
+    "life_insurance_relief": {
+      "description": "Life Insurance Relief. The relief is the lower of (a) the headroom between the individual's own compulsory CPF contributions and the contribution ceiling, and (b) the smaller of the premiums paid or the stated percentage of the insured value. If the individual's own CPF contributions reach the ceiling, the relief is nil regardless of premiums paid.",
+      "value": {
+        "cpf_contribution_ceiling": 5000,
+        "percent_of_insured_value": 0.07,
+        "counted_contributions": [
+          "compulsory employee CPF contribution",
+          "compulsory MediSave and voluntary CPF contributions made as a self-employed individual"
+        ],
+        "measured_in": "the year preceding the Year of Assessment",
+        "qualifying_policy_types": [
+          "the individual's own life insurance policy",
+          "the spouse's life insurance policy (for YA 2025 and before, only a wife's policy paid by the husband; from YA 2026 onwards also a husband's policy paid by the wife)"
+        ],
+        "excluded_policy_and_rider_types": [
+          "accident insurance",
+          "hospitalisation and health insurance, including MediShield and Integrated Shield Plans",
+          "disability insurance, including ElderShield and CareShield Life",
+          "riders under a life policy, including total and permanent disability, critical illness and premium waiver riders",
+          "critical illness policies",
+          "endowment policies",
+          "investment-linked policies where the investment component is a fundamental consideration"
+        ],
+        "claim_required": true
+      },
+      "as_of": "YA 2023 onwards",
       "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/life-insurance-relief",
-      "verified_on": null
+      "verified_on": "2026-09-13",
+      "note": "The insurer must have a Singapore office or branch for policies taken out on or after 10 Aug 1973. From YA 2026 the relief covers a husband's policy paid by his wife; earlier YAs do not."
     },
     "earned_income_relief": {
-      "description": "Automatic relief on earned income, scaled by age band.",
+      "description": "Automatic relief on earned income, scaled by age as at 31 December of the year preceding the Year of Assessment. Capped at the amount of taxable earned income.",
       "value": { "below_55": 1000, "55_to_59": 6000, "60_and_above": 8000 },
-      "as_of": null,
+      "as_of": "YA 2026",
       "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/earned-income-relief",
-      "verified_on": null
+      "verified_on": "2026-09-13",
+      "note": "Granted automatically; no claim is needed."
+    },
+    "earned_income_relief_disability": {
+      "description": "Higher Earned Income Relief for a person with a permanent physical disability or mental impairment that severely affects the ability to work. Capped at the amount of taxable earned income.",
+      "value": { "below_55": 4000, "55_to_59": 10000, "60_and_above": 12000 },
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/earned-income-relief",
+      "verified_on": "2026-09-13",
+      "note": "Requires evidence of a qualifying disability - assistance with any one of the six activities of daily living, or impairment in any one of the three mental-impairment activity areas. Claimed in the first year and granted automatically thereafter."
+    },
+    "personal_reliefs_not_itemised_here": {
+      "description": "Personal reliefs that exist but whose amounts have NOT been confirmed against the source in this file. Do not use an amount for these until it has been read from the IRAS page and entered as its own parameter.",
+      "value": [
+        "CPF Relief for employees",
+        "CPF Relief for self-employed and platform workers",
+        "Compulsory and voluntary MediSave contributions",
+        "Spouse Relief and Spouse Relief (Disability)",
+        "Parent Relief and Parent Relief (Disability)",
+        "Grandparent Caregiver Relief",
+        "Sibling Relief (Disability)",
+        "Qualifying Child Relief and Child Relief (Disability)",
+        "Working Mother's Child Relief",
+        "NSman Relief (Self, Wife and Parent)",
+        "Parenthood Tax Rebate"
+      ],
+      "as_of": "YA 2026",
+      "source": "https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs",
+      "verified_on": "2026-09-13",
+      "note": "Two reliefs have lapsed and must not be claimed: Foreign Domestic Worker Levy Relief lapsed with effect from YA 2025, and Course Fees Relief lapsed with effect from YA 2026. Claiming conditions differ per relief - for example Working Mother's Child Relief is a percentage of the mother's earned income and Parent Relief is shared among claimants, so read each page before using it."
     }
   }
 }

@@ -1,0 +1,114 @@
+{
+  "_note": "Illustrative household used to exercise the scripts. Every figure here is made up: replace it with the household's own documents, and never let an example value reach a deliverable. One file carries the blocks several scripts need, because a real household is one file.",
+  "as_of": "2026-09-13",
+  "currency": "SGD",
+  "buffer_months": 12,
+  "buffer_basis": "total",
+  "savings_target": 0.25,
+  "income": [
+    { "name": "Spouse A salary", "monthly": 11000, "stability": "stable" },
+    { "name": "Spouse B salary", "monthly": 6500, "stability": "stable" }
+  ],
+  "expenses": [
+    { "name": "Housing and utilities", "monthly": 3200, "essential": true },
+    { "name": "Food and household", "monthly": 1800, "essential": true },
+    { "name": "Transport", "monthly": 700, "essential": true },
+    { "name": "Children - school and enrichment", "monthly": 1500, "essential": true },
+    { "name": "Insurance premiums", "monthly": 600, "essential": true },
+    { "name": "Parents' support", "monthly": 800, "essential": true },
+    { "name": "Discretionary and travel", "monthly": 1400, "essential": false }
+  ],
+  "cash": [
+    { "name": "Joint current account", "value": 40000, "access": "instant" },
+    { "name": "Fixed deposit, 3 months", "value": 60000, "access": "days" },
+    { "name": "CPF Ordinary Account", "value": 120000, "access": "locked" }
+  ],
+  "loans": [
+    { "name": "HDB mortgage", "balance": 380000, "annual_rate": 0.026, "monthly_payment": 1700 },
+    { "name": "Car loan", "balance": 45000, "annual_rate": 0.038, "monthly_payment": 900 }
+  ],
+  "extra_monthly": 1000,
+  "invest_expected_return": 0.05,
+  "invest_tax_rate": 0.0,
+  "goals": [
+    {
+      "name": "University fees - elder child",
+      "target_amount": 60000,
+      "target_date": "2034-06-01",
+      "current_amount": 15000,
+      "monthly_contribution": 400,
+      "expected_annual_return": 0.03
+    },
+    {
+      "name": "University fees - younger child",
+      "target_amount": 60000,
+      "target_date": "2037-06-01",
+      "current_amount": 8000,
+      "monthly_contribution": 300,
+      "expected_annual_return": 0.03
+    },
+    {
+      "name": "Relocation reserve",
+      "target_amount": 80000,
+      "target_date": "2029-01-01",
+      "current_amount": 25000,
+      "monthly_contribution": 800,
+      "expected_annual_return": 0.02
+    }
+  ],
+  "lives": [
+    {
+      "name": "Spouse A",
+      "annual_income": 132000,
+      "income_years_to_replace": 12,
+      "outstanding_debt": 380000,
+      "education_costs_remaining": 120000,
+      "existing_life_cover": 400000,
+      "cpf_available": 180000,
+      "survivor_benefits": 0,
+      "survivor_annual_spending": 60000
+    },
+    {
+      "name": "Spouse B",
+      "annual_income": 78000,
+      "income_years_to_replace": 12,
+      "outstanding_debt": 45000,
+      "education_costs_remaining": 120000,
+      "existing_life_cover": 200000,
+      "cpf_available": 120000,
+      "survivor_benefits": 0,
+      "survivor_annual_spending": 60000
+    }
+  ],
+  "disability": {
+    "annual_income_gap": 90000,
+    "years_to_cover": 3,
+    "existing_cover": 120000,
+    "liquid_assets": 100000
+  },
+  "long_term_care": {
+    "monthly_cost": 3500,
+    "monthly_scheme_payout": 600,
+    "years": 8,
+    "existing_cover": 0
+  },
+  "risks": [
+    { "name": "Death of a breadwinner", "probability": 0.01, "impact": 1200000, "status": "partial", "mitigation": "Life cover sized in insurance_needs.py" },
+    { "name": "Disability stopping work for 3 years", "probability": 0.05, "impact": 270000, "status": "uncovered", "mitigation": null },
+    { "name": "Job loss", "probability": 0.08, "impact": 132000, "status": "covered", "mitigation": "12-month buffer" },
+    { "name": "Long-term care event", "probability": 0.20, "impact": 278400, "status": "uncovered", "mitigation": null },
+    { "name": "Greater China equity shock of 40%", "probability": 0.15, "impact": 180000, "status": "accepted", "mitigation": "Regional cap in the mandate" },
+    { "name": "Relocation before the planned date", "probability": 0.10, "impact": 40000, "status": "accepted", "mitigation": "Relocation reserve goal" }
+  ],
+  "portfolio": {
+    "as_of": "2026-09-13",
+    "holdings": [
+      { "name": "Global equity ETF", "asset_class": "equity", "value": 300000, "region": "Global", "quantity": 4200, "price_symbol": "IWDA.L", "price_currency": "USD" },
+      { "name": "Singapore equity ETF", "asset_class": "equity", "value": 60000, "region": "Singapore", "quantity": 20000, "price_symbol": "ES3.SI" },
+      { "name": "Hong Kong equity - BYD", "asset_class": "equity", "value": 80000, "region": "Hong Kong", "quantity": 1000, "price_symbol": "1211.HK", "price_currency": "HKD" },
+      { "name": "China A-share ETF", "asset_class": "equity", "value": 70000, "region": "China", "quantity": 20000, "price_symbol": "510300.SS", "price_currency": "CNY" },
+      { "name": "Bond fund", "asset_class": "bond", "value": 150000, "region": "Global", "price_currency": "SGD" },
+      { "name": "CPF Special Account", "asset_class": "cash", "value": 180000, "region": "Singapore" }
+    ]
+  }
+}

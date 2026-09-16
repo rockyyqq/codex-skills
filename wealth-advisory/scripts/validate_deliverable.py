@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Check a finished deliverable against the rules that make it defensible.
 
-deliverables.md says every document the skill produces carries six things. Until now
-that was prose, enforced by whoever assembled the document remembering it. This script
-reads the finished file and fails it instead.
+deliverables.md says every document the skill produces carries a set of universals -
+assumptions, verification status, basis note, scope statement, risk mandate, protection
+status, the tax residency and relief position, goals with dates and costs, and
+recommendations that carry their alternatives and assumptions. Until now that was prose,
+enforced by whoever assembled the document remembering it. This script reads the
+finished file and fails it instead.
 
 It checks structure and disclosure, not arithmetic. A document can pass this and still
 be wrong; it cannot pass this and be missing its assumptions.
@@ -12,7 +15,10 @@ Profiles
 --------
   full        The default. The six universals from deliverables.md:
               assumptions, parameter verification status, basis note, scope and
-              not-licensed-advice statement, risk mandate, protection status.
+              not-licensed-advice statement, risk mandate, protection status -
+              plus the three the checklist added: the tax residency position, a
+              goals section with dates and costs, and recommendations that carry
+              their alternatives and assumptions.
   continuity  The continuity pack is explicitly not an investment document in
               deliverables.md, so the investment checks are replaced by that pack's own
               requirements: who to contact, where accounts are held, cover and how to
@@ -71,6 +77,31 @@ COMMON_CHECKS = [
         "protection",
         r"^#{1,6}[^\n]*\bprotection\b|\bprotection (?:status|review|layer)\b",
         "No protection status. What the death, disability, illness and care layers cover, and where the gaps are.",
+    ),
+    (
+        "tax_residency",
+        r"(?i)(tax residen\w+|residency (?:status|basis|position)|non-resident (?:year|basis)|"
+        r"CPF and SRS position|relief position)",
+        "No tax residency and relief position. State each spouse's tax residency for the plan "
+        "year - it decides whether any relief is available at all - and the reliefs claimed "
+        "against the $80,000 cap, including whether a contribution would fall above it.",
+    ),
+    (
+        "goals",
+        r"(?i)^#{1,6}[^\n]*\bgoals?\b|\bgoals? (?:with|and) (?:dates?|costs?)\b",
+        "No goals section. Each goal carries a date and a cost, or it cannot be funded or tested.",
+    ),
+    (
+        "recommendations",
+        r"(?i)^#{1,6}[^\n]*\brecommendation",
+        "No recommendations section. A deliverable that only describes the position leaves the "
+        "household to work out what to do with it.",
+    ),
+    (
+        "recommendation_detail",
+        r"(?is)(alternatives?).{0,900}?(assumption)|(assumption).{0,900}?(alternatives?)",
+        "The recommendations do not show the alternatives considered and the assumptions they "
+        "rest on. Both belong beside the recommendation, not in a separate appendix.",
     ),
 ]
 

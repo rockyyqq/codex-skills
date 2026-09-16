@@ -1,0 +1,18 @@
+{
+  "_note": "Illustrative tax config for scripts/sg_relief.py. Figures are made up.",
+  "employment_income": 132000,
+  "other_taxable_income": 6000,
+  "employee_cpf_contributions": 19200,
+  "planned_srs_contribution": 15300,
+  "employer_srs_contribution": 0,
+  "planned_cpf_topup_self": 8000,
+  "planned_cpf_topup_family": 8000,
+  "srs_withdrawn_in_same_year": false,
+  "srs_account_suspended": false,
+  "becoming_citizen_pr_in_year": false,
+  "tax_residency_next_ya": "resident",
+  "insurance_premiums": 0,
+  "other_reliefs": 0,
+  "residency": "citizen_pr",
+  "age_band": "below_55"
+}

@@ -35,12 +35,14 @@ fail, both are named.
 Usage:
   python check_mandate.py --config household.json [--prices prices.json]
                           [--reports-dir reports] [--stale-days 90]
+                          [--max-quote-age-trading-days 5]
                           [--out report.md] [--json out.json] [--today YYYY-MM-DD]
 
 Exit codes:
   0  PASS           every limit satisfied, on data fresh enough to trust
   1  BREACH         at least one limit failed
-  2  CANNOT JUDGE   stale holdings, unrefreshed prices, or an incomplete config
+   2  CANNOT JUDGE   stale holdings, unrefreshed prices, a quote past the
+                     freshness limit, or an incomplete config
 
 The report file is written only when the status is BREACH or CANNOT JUDGE, and then to
 reports/YYYY-MM-DD-mandate-check.md unless --out says otherwise. A passing month leaves
@@ -57,7 +59,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import portfolio_risk  # noqa: E402  (imported after sys.path is extended)
+import market_data  # noqa: E402  (imported after sys.path is extended)
+import portfolio_risk  # noqa: E402
 
 
 ASSUMPTION_DEPENDENT = ("Portfolio volatility", "Estimated worst-case fall")
@@ -94,7 +97,12 @@ def days_since(iso_date: str | None, today: date) -> int | None:
         return None
 
 
-def revalue(cfg: dict, prices: dict | None):
+def revalue(
+    cfg: dict,
+    prices: dict | None,
+    today_date: date | None = None,
+    max_quote_age_days: int = market_data.MAX_QUOTE_AGE_TRADING_DAYS,
+):
     """Return a copy of the config with market prices applied, plus the notes."""
     holdings = (cfg.get("portfolio") or {}).get("holdings") or []
     reporting = cfg.get("currency", "SGD")
@@ -140,11 +148,17 @@ def revalue(cfg: dict, prices: dict | None):
                 continue
             rate = float(fx[key]["rate"])
 
+        quote_age = market_data.trading_days_since(
+            quote.get("date"), reference=today_date or date.today()
+        )
         entry["value"] = float(quantity) * float(quote["close"]) * rate
         entry["_pricing"] = {
             "symbol": symbol,
             "close": float(quote["close"]),
             "close_date": quote.get("date"),
+            "quote_age_trading_days": quote_age,
+            "provider": quote.get("provider"),
+            "basis": quote.get("adjusted"),
             "quote_currency": quote_currency,
             "fx_rate": rate,
             "fx_date": (fx.get("{}/{}".format(quote_currency, reporting)) or {}).get("date"),
@@ -155,6 +169,19 @@ def revalue(cfg: dict, prices: dict | None):
             problems.append(
                 "{} ({}): carried forward from {} because the quote could not be "
                 "refreshed".format(name, symbol, quote.get("date"))
+            )
+        elif quote_age is None:
+            problems.append(
+                "{} ({}): the quote carries no usable date, so its freshness cannot be "
+                "judged. A price without a date is not a fact about anything.".format(
+                    name, symbol)
+            )
+        elif quote_age > max_quote_age_days:
+            problems.append(
+                "{} ({}): the quote is dated {} and is {} trading day(s) old, past the {}-day "
+                "limit in data-provenance.md. Run refresh_prices.py - a market value that old "
+                "cannot support a limit check.".format(
+                    name, symbol, quote.get("date"), quote_age, max_quote_age_days)
             )
         effective.append(entry)
 
@@ -307,6 +334,14 @@ def main() -> int:
     parser.add_argument("--prices", help="Price overlay. Defaults to prices.json beside the config.")
     parser.add_argument("--reports-dir", help="Where to write a report when one is needed.")
     parser.add_argument("--stale-days", type=int, default=90, help="Holdings older than this cannot be judged. Default 90.")
+    parser.add_argument(
+        "--max-quote-age-trading-days",
+        type=int,
+        default=market_data.MAX_QUOTE_AGE_TRADING_DAYS,
+        help="Market prices older than this cannot support a limit check. Default 5, from "
+             "data-provenance.md. A quote that is merely old is reported, never treated as "
+             "unchanged.",
+    )
     parser.add_argument("--out", help="Write the report here instead of the reports directory.")
     parser.add_argument("--json", dest="json_out", help="Also write the raw result as JSON here.")
     parser.add_argument("--today", help="Override today's date, for testing.")
@@ -352,7 +387,9 @@ def main() -> int:
             "cannot be checked without it.".format(prices_path)
         )
 
-    effective_cfg, priced, manual, problems = revalue(cfg, prices)
+    effective_cfg, priced, manual, problems = revalue(
+        cfg, prices, today, args.max_quote_age_trading_days
+    )
     # Every pricing problem becomes a reason, because a limit evaluated on a value we
     # could not verify is not a limit that was checked.
     reasons.extend(problems)

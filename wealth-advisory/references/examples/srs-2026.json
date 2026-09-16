@@ -1,0 +1,9 @@
+{
+  "_note": "Illustrative SRS drawdown config for scripts/srs_drawdown.py. Figures are made up.",
+  "srs_balance": 420000,
+  "first_withdrawal_year": 2036,
+  "first_contribution_date": "2016-03-15",
+  "other_taxable_income": 0,
+  "other_reliefs": 0,
+  "tax_resident": true
+}

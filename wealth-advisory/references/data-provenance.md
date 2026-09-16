@@ -45,6 +45,28 @@ State in one line, per deliverable:
 Past the limit, the figure is not used to support a conclusion. It can be shown as
 context, labelled as stale, and the conclusion waits for a refresh.
 
+Two of these are enforced in code rather than left to judgement. `check_mandate.py`
+refuses to judge a limit when a quote is older than the five-trading-day limit or a
+figure carries no usable date, and `refresh_prices.py` marks a quote stale on the
+same rule. Holdings older than their confirmation limit make the check return
+CANNOT JUDGE instead of PASS.
+
+## Where the fetching rules live
+
+Which free sources work, what each covers, how they fail and what they do not
+provide is maintained by the **`technical-analysis` skill** in
+`references/data-sources.md`: Yahoo's chart API and its throttling, Eastmoney for
+Hong Kong and mainland names, the Eastmoney fund API for Chinese unit trusts, and
+the index valuation file. That file is the catalogue; it is not duplicated here,
+because two copies of a source list drift apart.
+
+`scripts/market_data.py` implements the part this skill depends on: the provider
+chain per symbol, the retry and throttle rules, and the checks that tell a failed
+fetch from a flat market. Every quote it returns carries its provider, quote date,
+granularity, adjustment basis and age, because two providers can disagree and both
+be right on different dates, and because a series that is not adjusted for a split
+shows a fall that did not happen.
+
 ## When a source fails
 
 Market data sources rate-limit, block by address, and change their endpoints without

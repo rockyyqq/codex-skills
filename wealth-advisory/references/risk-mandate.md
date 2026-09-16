@@ -84,3 +84,5 @@ Two rules make the check worth having:
 - **A concentration breach and a volatility breach are not the same claim.** Concentration is a fact about what is held. Volatility and worst-case fall are downstream of the return and correlation assumptions, so a breach there is a statement about the assumptions. Fix the concentration; re-examine the assumptions.
 
 The holdings file carries `portfolio.as_of`, the date the household last confirmed the positions and quantities. That date is separate from the price date, and both matter: prices move daily, but a new holding, a contribution or a sale is invisible to the market data and only appears when the household updates the file. That is what the staleness limit catches.
+
+The check also refuses to judge a limit on a quote past the five-trading-day limit, so the sequence is `refresh_prices.py` first and `check_mandate.py` second. What each kind of alert means - a breach, an assumption-dependent breach, CANNOT JUDGE, and the proactive observations that are not breaches at all - is set out in `references/monitoring.md`. Read it before turning a monthly result into a recommendation.
