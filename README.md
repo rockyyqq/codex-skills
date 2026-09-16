@@ -8,25 +8,32 @@ method, not shared team standards.
 | Skill | Invoke with | What it does |
 |---|---|---|
 | `poster-review` | automatic on poster work, or name it | Standing requirements for conference, scientific and competition posters: PowerPoint output built from native objects, section order (Background, Methods, Participants, Results, Discussion), prose-versus-bullets rules, chart and data checks, event compliance, and independent verification of the finished deck. |
+| `research` | ask for a literature review, an evidence table or a citation check, or name it | Sources, appraises and cites evidence for health and mental health services research: framing a searchable question, logging a reproducible search, screening and extracting into evidence tables, appraising design and independence, reading or running a meta-analysis, checking a measure before comparing scores, and formatting references to the journal's style. Ships `check_citations.py`. |
 | `role-split` | `$role-split` | Splits a task into independent roles - builder plus at least one verifier who falsifies the result against a source the author did not write - and adds a design reviewer for visual work. Tiers: `$role-split no split` (one self-check pass), `$role-split simple` (2 roles), `$role-split complex` (up to 4). For high-stakes, externally presented work. |
-| `wealth-advisory` | ask a planning question, or name it | Household financial planning for a Singapore-based family with Greater China exposure and a possible relocation: retirement and multi-currency projections, portfolio risk and mandate checks, CPF/SRS relief planning, protection and continuity review. Ships eight Python tools that take a JSON config and refuse to invent a missing number. |
+| `technical-analysis` | ask about a chart, a level or an indicator, or name it | Reads a listed security's price and volume history - trend, support and resistance, moving averages, momentum and volatility, chart patterns, and the arithmetic that turns an entry and a stop into a position size. States the limits before the reading: an indicator transforms past price rather than informing, and "will it hold" has no answer. Ships `analyse.py`, `valuation.py` and an OpenD probe. |
+| `wealth-advisory` | ask a planning question, or name it | Household financial planning for a Singapore-based family with Greater China exposure and a possible relocation: retirement and multi-currency projections, portfolio risk and mandate checks, CPF/SRS relief planning, protection and continuity review, and monthly mandate monitoring. Ships seventeen Python tools that take a JSON config and refuse to invent a missing number. |
 
 ## Layout
 
 Each skill is a folder whose name matches the `name` field in its `SKILL.md` frontmatter:
 
 ```
-poster-review/
+<skill-name>/
   SKILL.md              always present, carries the name and the trigger description
   agents/openai.yaml    display name, short description and default prompt for the UI
   references/           the detail files SKILL.md points to
-wealth-advisory/
-  SKILL.md
-  references/           method, parameters and provenance notes
-  scripts/              portfolio_risk.py, plan_projection.py, rebalance.py,
-                        sg_relief.py, insurance_compare.py, refresh_prices.py,
-                        check_mandate.py, validate_deliverable.py
+  scripts/              only in research, technical-analysis and wealth-advisory
 ```
+
+The three skills that carry code:
+
+- `research/scripts/` - `check_citations.py`
+- `technical-analysis/scripts/` - `analyse.py`, `valuation.py`, `opend_probe.py`
+- `wealth-advisory/scripts/` - `market_data.py` and `common.py` are shared by the rest;
+  `portfolio_risk.py`, `plan_projection.py`, `rebalance.py`, `sg_relief.py`, `srs_drawdown.py`,
+  `insurance_compare.py`, `insurance_needs.py`, `refresh_prices.py`, `check_mandate.py`,
+  `check_params.py`, `validate_deliverable.py`, `cashflow.py`, `debt.py`, `goal_funding.py`
+  and `risk_register.py` sit on top of them
 
 The `description` line in each `SKILL.md` is what decides when the skill fires, so edit it
 carefully - it is the trigger, not a summary.
