@@ -22,19 +22,48 @@ ASSERTIONS = (
     (re.compile(r"\bincrease the dose\b", re.I), "dose instruction"),
 )
 
-REQUIRED = (
+EVIDENCE_REQUIRED = (
     ("## Evidence", "no Evidence section"),
     ("Last 12 months", "no recency block"),
     ("Sources", "no Sources block"),
     ("http", "no resolvable source link"),
 )
 
+# A household review is a different document from an evidence report, and
+# demanding an Evidence section of it fails a correct report. A gate that
+# fires falsely teaches the operator to bypass it, which is worse than no gate.
+REVIEW_REQUIRED = (
+    ("## Facts", "no Facts section"),
+    ("## Assumption-dependent", "no assumption-dependent section"),
+    ("## Cannot judge", "no Cannot-judge section"),
+    ("status:", "no status line"),
+)
 
-def check(text):
+
+def detect_kind(text):
+    """Evidence if it says so; review if it carries either review marker.
+
+    A document with neither falls through to evidence, which has the stricter
+    required list - an unrecognised report fails closed rather than passing.
+    """
+    lowered = text.lower()
+    if "## evidence" in lowered:
+        return "evidence"
+    if "## facts" in lowered or "## cannot judge" in lowered:
+        return "review"
+    return "evidence"
+
+
+def check(text, kind=None):
     """Return a list of problems. An empty list means the report passes."""
+    kind = kind or detect_kind(text)
+    required = REVIEW_REQUIRED if kind == "review" else EVIDENCE_REQUIRED
     found = []
-    for needle, message in REQUIRED:
-        if needle not in text:
+    # Case-insensitive: a section heading or a status line may be capitalised,
+    # and a gate that fails on capitalisation is a gate people learn to bypass.
+    lowered = text.lower()
+    for needle, message in required:
+        if needle.lower() not in lowered:
             found.append(message)
     for pattern, label in IDENTIFIERS + ASSERTIONS:
         for match in pattern.finditer(text):
@@ -45,6 +74,8 @@ def check(text):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("report")
+    parser.add_argument("--kind", choices=("evidence", "review"), default=None,
+                        help="override the detected report kind")
     args = parser.parse_args(argv)
 
     path = Path(args.report)
@@ -54,13 +85,14 @@ def main(argv=None):
         print(f"FAIL: report not found: {path}")
         return 1
 
-    found = check(text)
+    kind = args.kind or detect_kind(text)
+    found = check(text, kind)
     if found:
-        print(f"FAIL: {len(found)} problem(s) in {path.name}")
+        print(f"FAIL: {len(found)} problem(s) in {path.name} ({kind})")
         for problem in found:
             print(f"  {problem}")
         return 1
-    print(f"OK: {path.name} carries no identifiers and no unsourced claims")
+    print(f"OK: {path.name} ({kind}) carries no identifiers and no unsourced claims")
     return 0
 
 

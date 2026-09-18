@@ -41,6 +41,18 @@ if ($record -and $record['people']) {
     $people = $record['people'].Keys.Count
     foreach ($personKey in $record['people'].Keys) {
         $person = $record['people'][$personKey]
+
+        # A booked procedure with an outstanding pre-operative step is a due
+        # item. Reporting OK while it is outstanding is the false-reassurance
+        # failure this script exists to avoid.
+        foreach ($procedure in @($person['planned_procedures'])) {
+            if (-not $procedure) { continue }
+            if ($procedure['status'] -eq 'booked' -and $procedure['pre_op_outstanding']) {
+                $planned = $procedure['planned_for']
+                $facts += "- $personKey / $($procedure['code']): pre-operative step outstanding, planned $planned"
+            }
+        }
+
         foreach ($event in @($person['events'])) {
             if (-not $event['last_done'] -or -not $event['interval_months']) { continue }
             $last  = [datetime]::ParseExact($event['last_done'], 'yyyy-MM-dd', $null)
