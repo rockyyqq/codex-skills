@@ -6,16 +6,43 @@ The vault holds one JSON document. People are keyed by role label, never by name
 
 | Field | Shape | Rule |
 |---|---|---|
-| `conditions` | list of `{name, onset, last_confirmed}` | `last_confirmed` is required |
+| `conditions` | list of `{name, onset, onset_reports, last_confirmed}` | `last_confirmed` is required; `onset_reports` carries who said what |
 | `medications` | list of `{name, dose_text, prescriber, started, stopped, stop_reason, source}` | `source` is one of `label`, `pharmacy`, `memory` |
 | `allergies` | list of `{substance, reaction, last_confirmed}` | the reaction type is required, not just the substance |
 | `family_history` | list of `{relative, condition, age_at_diagnosis, side}` | a vague entry is rejected rather than stored |
 | `measurements` | list of `{value, unit, reference_range, conditions_of_measurement, taken_on}` | home readings record the conditions |
+| `treatments_tried` | list of `{name, kind, started, stopped, outcome, informant}` | `null` means **not recorded**, which is not the same as "none tried" |
+| `planned_procedures` | list of `{code, name, tosp_table, setting, planned_for, status, pre_op_outstanding}` | a booked procedure is not an event; it has a date and a decision point, not an interval |
 | `events` | list of `{id, kind, code, last_done, interval_months, basis, source_id}` | see below |
 
 `events.kind` is one of `screening`, `vaccination`, `monitoring`.
 `events.basis` is `fact` or `assumption`, and it decides which section of the
 review the item appears in.
+
+## Onset reports, and who said so
+
+Duration is often the fact a decision turns on, and it is also the fact a
+household is least able to state precisely. So `onsets` are stored as **reports,
+not as a single value**:
+
+```json
+"onset_reports": [
+  { "when": "2025-09", "precision": "month", "informant": "parent", "approximate": true },
+  { "when": "2026-07", "precision": "month", "informant": "helper", "approximate": true,
+    "note": "noticed, which is a lower bound and not an onset" }
+]
+```
+
+**Disagreement is preserved, never averaged.** Two informants giving different
+dates is itself a finding — it means the true onset is unknown, and that
+uncertainty belongs in the record rather than being resolved by picking one.
+
+Two rules follow:
+
+- **"Noticed on <date>" is a lower bound, not an onset.** A condition can be
+  present for a long time before anyone looks.
+- **Never store a single onset date when the reports conflict.** Store both and
+  mark the conflict.
 
 ## There is no dose field
 
@@ -35,6 +62,8 @@ or the prescription says, for identification only — not a quantity to act on.
    is more dangerous than none, because it looks authoritative.
 5. **Blank is not "none".** "No known allergies" and "not asked" are different
    values and must never collapse into one.
+6. **A report is not a measurement.** Where a fact comes from a person's memory
+   rather than a document, record the informant and mark it approximate.
 
 ## Identifiers are never stored
 
