@@ -62,6 +62,8 @@ if ($record -and $record['people']) {
         }
 
         foreach ($event in @($person['events'])) {
+            # A null section yields @($null), which is one null element, not zero.
+            if (-not $event) { continue }
             if (-not $event['last_done'] -or -not $event['interval_months']) { continue }
             $last  = [datetime]::ParseExact($event['last_done'], 'yyyy-MM-dd', $null)
             $dueOn = $last.AddMonths([int]$event['interval_months'])

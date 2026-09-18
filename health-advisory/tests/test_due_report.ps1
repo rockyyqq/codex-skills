@@ -109,6 +109,25 @@ Check 'several items render as a list, not System.Object[]' {
     Remove-Item -LiteralPath $multi -Recurse -Force -ErrorAction SilentlyContinue
 }
 
+Check 'a null events section does not crash the review' {
+    # @($null) is one null element, so the loop body ran once on $null and threw.
+    $nullEvents = Join-Path $env:TEMP ('hv-nullev-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $nullEvents
+    New-Item -ItemType Directory -Path (Join-Path $nullEvents 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-b' = @{
+        conditions = @(); medications = @(); allergies = @()
+        family_history = @(); measurements = @(); lifestyle = @()
+        treatments_tried = @()
+        planned_procedures = @()
+        events = $null
+    } } }
+    $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') 2>&1 | Out-String
+    Assert-True ($out -notmatch 'Cannot index into a null array') "the review crashed: $out"
+    Assert-True ($out -match 'status:') "the review produced no status: $out"
+    Remove-Item -LiteralPath $nullEvents -Recurse -Force -ErrorAction SilentlyContinue
+}
+
 Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue
 if ($script:Failures -gt 0) { Write-Host "`n$($script:Failures) check(s) failed"; exit 1 }
 Write-Host "`nall due-report checks passed"; exit 0
