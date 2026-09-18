@@ -1,0 +1,3 @@
+display_name: "Health Advisory"
+short_description: "Household health questions from dated sources, and a record that is reviewed"
+default_prompt: "Answer this health question from dated sources, and tell me what it does not settle."
