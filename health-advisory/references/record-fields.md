@@ -73,6 +73,12 @@ No names. No full dates of birth — year or age band only. No national ID, no
 address, no phone number, no email. `validate_report.py` rejects a generated
 report containing any of these patterns.
 
+**All dates in the record are ISO** — `2026-09-18`. A date written as
+"7 July 2026" is indistinguishable from a date of birth, which is the shape the
+privacy check exists to catch, so the check flags it. Writing every date in ISO
+keeps that check strict and useful instead of loosening it until it catches
+nothing.
+
 ## Known keys
 
 `validate_record.ps1` enforces exactly these, and **fails on any key not listed
@@ -87,7 +93,7 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | lifestyle | `name`, `value`, `last_confirmed` | `note` |
 | condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by`, `note` |
 | onset report | `when`, `informant`, `approximate` | `precision`, `note` |
-| medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason` |
+| medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason`, `note` |
 | allergy | `substance`, `reaction`, `last_confirmed` | — |
 | family history | `relative`, `condition` | `age_at_diagnosis`, `side` |
 | measurement | `name`, `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
