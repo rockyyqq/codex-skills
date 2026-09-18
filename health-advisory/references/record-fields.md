@@ -16,6 +16,8 @@ The vault holds one JSON document. People are keyed by role label, never by name
 | `events` | list of `{id, kind, code, last_done, interval_months, basis, source_id}` | see below |
 
 `events.kind` is one of `screening`, `vaccination`, `monitoring`.
+It is also `procedure` for an operation that has already happened, which is how a
+surgical history is recorded without inventing a separate section.
 `events.basis` is `fact` or `assumption`, and it decides which section of the
 review the item appears in.
 
@@ -80,7 +82,8 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | Level | Required | Optional |
 |---|---|---|
 | document | `schema`, `people` | `as_of` |
-| person | `conditions`, `medications`, `allergies` | `age_band`, `family_history`, `measurements`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| person | `conditions`, `medications`, `allergies` | `age_band`, `family_history`, `measurements`, `lifestyle`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| lifestyle | `name`, `value`, `last_confirmed` | `note` |
 | condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by` |
 | onset report | `when`, `informant`, `approximate` | `precision`, `note` |
 | medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason` |

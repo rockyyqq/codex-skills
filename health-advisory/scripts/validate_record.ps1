@@ -20,7 +20,7 @@ $SUPPORTED_SCHEMA = @(3)
 $KNOWN_TOP        = @('schema', 'as_of', 'people')
 $REQUIRED_TOP     = @('schema', 'people')
 $KNOWN_PERSON     = @('age_band', 'conditions', 'medications', 'allergies', 'family_history',
-                      'measurements', 'treatments_tried', 'treatments_tried_note',
+                      'measurements', 'lifestyle', 'treatments_tried', 'treatments_tried_note',
                       'planned_procedures', 'events')
 $REQUIRED_PERSON  = @('conditions', 'medications', 'allergies')
 $KNOWN_CONDITION  = @('name', 'last_confirmed', 'onset_reports', 'onset_unknown', 'onset_conflict', 'severity', 'reported_by')
@@ -39,6 +39,8 @@ $KNOWN_PROCEDURE  = @('code', 'status', 'planned_for', 'pre_op_outstanding', 'na
 $REQUIRED_PROCEDURE = @('code', 'status', 'planned_for', 'pre_op_outstanding')
 $KNOWN_EVENT      = @('id', 'kind', 'code', 'last_done', 'interval_months', 'basis', 'source_id')
 $REQUIRED_EVENT   = @('id', 'kind', 'code', 'last_done', 'interval_months', 'basis', 'source_id')
+$KNOWN_LIFESTYLE  = @('name', 'value', 'last_confirmed', 'note')
+$REQUIRED_LIFESTYLE = @('name', 'value', 'last_confirmed')
 
 $problems = [System.Collections.Generic.List[string]]::new()
 
@@ -83,6 +85,7 @@ if ($record.ContainsKey('people')) {
             @{ name = 'measurements';     known = $KNOWN_MEASURE;    required = $REQUIRED_MEASURE }
             @{ name = 'planned_procedures'; known = $KNOWN_PROCEDURE; required = $REQUIRED_PROCEDURE }
             @{ name = 'events';           known = $KNOWN_EVENT;      required = $REQUIRED_EVENT }
+            @{ name = 'lifestyle';        known = $KNOWN_LIFESTYLE;  required = $REQUIRED_LIFESTYLE }
         )) {
             # Hashtable access must use ['key'] - under StrictMode, .key throws.
             $sectionName = $section['name']
