@@ -1,0 +1,41 @@
+{
+  "_note": "Which process a question gets, chosen by the nature of the question. The purpose is to be boring when the question is boring: a terminology question must not trigger a literature sweep. Edit this file when a route is wrong, not the skill prose.",
+  "gate": {
+    "id": "urgency",
+    "file": "urgency.json",
+    "runs_before": "all",
+    "note": "Checked before any retrieval, for every class below."
+  },
+  "announce": true,
+  "_announce_note": "State the route in the answer, for example 'this is a drug-interaction question, so I am going to the label'. A misroute must be visible rather than silently producing a confidently wrong shape of answer.",
+  "classes": [
+    {
+      "id": "terminology",
+      "match": "what is X; what does this test measure; what does this term mean",
+      "process": "answer",
+      "evidence_sweep": false,
+      "sources": ["patient-education", "guideline"]
+    },
+    {
+      "id": "drug",
+      "match": "dose; interaction; contraindication; adverse effect of a named drug",
+      "process": "label",
+      "evidence_sweep": false,
+      "sources": ["label", "regulator"]
+    },
+    {
+      "id": "effectiveness",
+      "match": "does X work; is X effective; what does the evidence say about X",
+      "process": "evidence-section",
+      "evidence_sweep": true,
+      "sources": ["systematic-review", "guideline", "primary-study"]
+    },
+    {
+      "id": "symptom",
+      "match": "a person has a symptom, or asks what a symptom means for them",
+      "process": "consultation",
+      "evidence_sweep": false,
+      "sources": ["guideline", "patient-education"]
+    }
+  ]
+}

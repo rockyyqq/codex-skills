@@ -169,6 +169,25 @@ a record that must persist.
 | Safety signal | regulator communications | news coverage |
 | What is X? | MSD Manuals, MedlinePlus, patient education | a journal article |
 
+### Question-class triage
+
+The ladder selects a source. This selects a *process and an effort*, so that a
+terminology question does not trigger a literature sweep, and a symptom question
+does not get an evidence section where the urgency gate is what matters. The four
+classes and their processes live in `references/routing.json`, as data rather
+than prose, because a rule the model re-derives each time cannot be audited.
+
+Two rules bind it:
+
+1. **The emergency gate runs before routing**, for every class. It is not a
+   branch; it is the first step regardless of the question.
+2. **The route is announced.** The answer states which route it took, so a
+   misroute is visible to the reader rather than silently producing a
+   confidently wrong shape of answer.
+
+Only effectiveness questions get the 12-month literature sweep. Everything else
+is answered from a single authoritative source class.
+
 ### Reviews first, with named fall-throughs
 
 A systematic review is used when it fits. The skill moves to primary studies in
