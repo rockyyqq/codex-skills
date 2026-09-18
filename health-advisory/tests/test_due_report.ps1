@@ -26,6 +26,9 @@ Set-VaultRecord -Record @{
         conditions  = @()
         medications = @()
         allergies   = @()
+        # Recorded as "none tried" - not $null, which means "not recorded" and
+        # would (correctly) make the whole review CANNOT JUDGE.
+        treatments_tried = @()
         events      = @(@{ id = 'E1'; kind = 'screening'; code = 'demo-test'
                            last_done = '2020-01-01'; interval_months = 12; basis = 'fact' })
     } }
@@ -56,6 +59,25 @@ Check 'the written report names the overdue item' {
     $files = @(Get-ChildItem (Join-Path $env:HEALTH_VAULT_ROOT 'reports') -Filter '*-review.md')
     $body = Get-Content -LiteralPath $files[0].FullName -Raw
     Assert-True ($body -match 'demo-test') 'the report does not name the overdue item'
+}
+
+Check 'an unrecorded field makes the review CANNOT JUDGE, not DUE' {
+    $incomplete = Join-Path $env:TEMP ('hv-inc-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $incomplete
+    New-Item -ItemType Directory -Path (Join-Path $incomplete 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{
+        schema = 3
+        people = @{ 'child-a' = @{
+            conditions = @(); medications = @(); allergies = @()
+            treatments_tried = $null
+            events = @()
+        } }
+    }
+    $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') 2>&1 | Out-String
+    Assert-True ($out -match 'status:\s*CANNOT JUDGE') "expected CANNOT JUDGE, got: $out"
+    Assert-True ($out -match 'cannot judge:\s*[1-9]') "the unknown was not counted: $out"
+    Remove-Item -LiteralPath $incomplete -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue

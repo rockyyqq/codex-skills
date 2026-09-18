@@ -46,6 +46,9 @@ def detect_kind(text):
     A document with neither falls through to evidence, which has the stricter
     required list - an unrecognised report fails closed rather than passing.
     """
+    stamped = re.search(r"<!--\s*kind:\s*(evidence|review)\s*-->", text)
+    if stamped:
+        return stamped.group(1)
     lowered = text.lower()
     if "## evidence" in lowered:
         return "evidence"

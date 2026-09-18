@@ -94,6 +94,11 @@ def test_an_evidence_report_is_detected_as_evidence():
     assert vr.detect_kind(CLEAN) == "evidence"
 
 
+def test_a_kind_stamp_beats_inference():
+    stamped = "<!-- kind: review -->\n# Household review\n\n## Evidence\n"
+    assert vr.detect_kind(stamped) == "review"
+
+
 def test_a_review_missing_the_cannot_judge_section_is_rejected():
     found = vr.check(CLEAN_REVIEW.replace("## Cannot judge", "## Notes"))
     assert any("Cannot-judge" in problem for problem in found), found
@@ -114,6 +119,7 @@ check("a missing Evidence section is rejected", test_a_missing_evidence_section_
 check("a correct review passes", test_a_correct_review_passes)
 check("a review is detected as a review", test_a_review_is_detected_as_a_review)
 check("an evidence report is detected as evidence", test_an_evidence_report_is_detected_as_evidence)
+check("a kind stamp beats inference", test_a_kind_stamp_beats_inference)
 check("a review missing Cannot-judge is rejected", test_a_review_missing_the_cannot_judge_section_is_rejected)
 check("identifiers are filtered in a review too", test_a_national_id_in_a_review_is_filtered_not_ignored)
 

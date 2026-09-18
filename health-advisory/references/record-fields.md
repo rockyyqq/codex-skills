@@ -70,3 +70,25 @@ or the prescription says, for identification only — not a quantity to act on.
 No names. No full dates of birth — year or age band only. No national ID, no
 address, no phone number, no email. `validate_report.py` rejects a generated
 report containing any of these patterns.
+
+## Known keys
+
+`validate_record.ps1` enforces exactly these, and **fails on any key not listed
+here**. That is deliberate: a misspelled key makes a real item invisible, and the
+review then reports a false all-clear. A typo must be loud, not silent.
+
+| Level | Required | Optional |
+|---|---|---|
+| document | `schema`, `people` | `as_of` |
+| person | `conditions`, `medications`, `allergies` | `age_band`, `family_history`, `measurements`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity` |
+| onset report | `when`, `informant`, `approximate` | `precision`, `note` |
+| medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason` |
+| allergy | `substance`, `reaction`, `last_confirmed` | — |
+| family history | `relative`, `condition` | `age_at_diagnosis`, `side` |
+| measurement | `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
+| planned procedure | `code`, `status`, `planned_for`, `pre_op_outstanding` | `name`, `tosp_table`, `setting`, `source` |
+| event | `id`, `kind`, `code`, `last_done`, `interval_months`, `basis`, `source_id` | — |
+
+`schema` must be a version this skill knows. An unrecognised version is refused
+rather than read, so an old record cannot be silently misread by new code.

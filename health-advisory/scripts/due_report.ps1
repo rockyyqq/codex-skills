@@ -35,12 +35,27 @@ if (Test-Path -LiteralPath $ledgerPath) {
     $stale += 'ledger-missing'
 }
 
-$facts = @(); $assumptions = @(); $people = 0
+$facts = @(); $assumptions = @(); $unknown = @(); $people = 0
 $record = Get-VaultRecord
 if ($record -and $record['people']) {
     $people = $record['people'].Keys.Count
     foreach ($personKey in $record['people'].Keys) {
         $person = $record['people'][$personKey]
+
+        # Completeness. An unrecorded or unknown field is not a pass: the review
+        # must not report a clean count on something it never assessed.
+        if ($null -eq $person['treatments_tried']) {
+            $unknown += "- $personKey / treatments_tried: not recorded"
+        }
+        foreach ($condition in @($person['conditions'])) {
+            if (-not $condition) { continue }
+            if ($condition['onset_unknown']) {
+                $unknown += "- $personKey / onset: unknown, the reports disagree"
+            }
+            if (-not $condition['severity']) {
+                $unknown += "- $personKey / severity: never graded"
+            }
+        }
 
         # A booked procedure with an outstanding pre-operative step is a due
         # item. Reporting OK while it is outstanding is the false-reassurance
@@ -65,16 +80,17 @@ if ($record -and $record['people']) {
     }
 }
 
-if ($stale.Count -gt 0) {
-    $status = 'CANNOT JUDGE'
-} elseif ($facts.Count -gt 0) {
-    $status = 'DUE'
-} else {
-    $status = 'OK'
-}
+$cannotJudge = @()
+foreach ($source in $stale) { $cannotJudge += "- source past its review date: $source" }
+$cannotJudge += $unknown
+
+if ($stale.Count -gt 0 -or $unknown.Count -gt 0) { $status = 'CANNOT JUDGE' }
+elseif ($facts.Count -gt 0) { $status = 'DUE' }
+else { $status = 'OK' }
 
 $stamp = $todayDate.ToString('yyyy-MM-dd')
 $lines = @(
+    "<!-- kind: review -->",
     "# Household review — $stamp",
     "",
     "**Status: $status**",
@@ -89,13 +105,13 @@ $lines = @(
     "",
     "## Cannot judge",
     "",
-    $(if ($stale.Count) { "- source(s) past their review date: $($stale -join ', ')" } else { "- nothing outstanding" }),
+    $(if ($cannotJudge.Count) { $cannotJudge } else { "- nothing outstanding" }),
     "",
     "## What this is not",
     "",
-    "These checks being up to date does **not** mean anyone is healthy. It means",
-    "the recorded items were compared against dated sources. Nothing here was",
-    "examined, and no conclusion about a person was drawn.",
+    "Date-based items were checked against dated sources. Conditions were **not**",
+    "assessed, nothing was examined, and no conclusion about a person was drawn.",
+    "These checks being up to date does not mean anyone is healthy.",
     ""
 )
 
@@ -108,5 +124,5 @@ Write-Output "status: $status"
 Write-Output "people: $people"
 Write-Output "due (facts): $($facts.Count)"
 Write-Output "to raise: $($assumptions.Count)"
-Write-Output "cannot judge: $($stale.Count)"
+Write-Output "cannot judge: $($cannotJudge.Count)"
 Write-Output "report: $reportPath"

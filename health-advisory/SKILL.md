@@ -68,6 +68,14 @@ Read `references/record-fields.md`. The vault is
 
 - `scripts/vault.ps1` is the only component that touches ciphertext. It exposes
   `status` and deliberately has no command that prints record content.
+- `scripts/validate_record.ps1` validates the stored record against the schema
+  and **fails closed on any unknown key**. A misspelled key makes a real item
+  invisible — and then the review reports a false all-clear. Run it after every
+  write to the vault.
+- `scripts/record_view.ps1` prints a derived view: structure, flags and gaps,
+  never clinical values. **Analyse from this, not from memory of having written
+  the record.** Recalling what you wrote is not reading the artifact back, and a
+  dropped or renamed key would go unnoticed.
 - **Scripts print counts and IDs, never record content.** Everything read into a
   conversation is written to the local session store in plaintext and persists.
   This is the load-bearing privacy rule; encryption does not substitute for it.

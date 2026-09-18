@@ -65,9 +65,11 @@ def test_every_reference_file_is_named():
 
 
 def test_every_script_is_named():
+    """Every script, not only the Python ones: this test previously checked
+    '*.py' and so could not catch an unmentioned PowerShell script."""
     missing = []
-    for path in sorted((SKILL_DIR / "scripts").glob("*.py")):
-        if path.name not in skill_text():
+    for path in sorted((SKILL_DIR / "scripts").glob("*")):
+        if path.is_file() and path.name not in skill_text():
             missing.append(path.name)
     assert not missing, f"SKILL.md never names: {missing}"
 

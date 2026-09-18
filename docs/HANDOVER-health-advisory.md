@@ -117,6 +117,35 @@ Two less far-reaching lessons:
 - **A single observation delayed the answer usefully.** "Noticed two months
   ago" is a lower bound, not an onset — a distinction the record now encodes.
 
+## Second round: the analysis pass, and five more
+
+Running the analysis surfaced five further defects. All fixed.
+
+5. **Nothing validated the record against its schema.** A single misspelled key
+   made a live item invisible: `planned_procedures` typed as
+   `planned_procedure` produced `status: OK`, `due: 0`, exit 0, no warning. A
+   typo caused a false all-clear. `scripts/validate_record.ps1` now fails closed
+   on any unknown key.
+6. **`cannot judge: 0` was false.** The record carried `onset_unknown` and
+   `treatments_tried: null`, yet the review reported zero unknowns, because it
+   only understood dates. It now runs a completeness pass, and the spec's own
+   words apply: record incomplete → `CANNOT JUDGE`.
+7. **The report's disclaimer overclaimed.** It said "the recorded items were
+   compared against dated sources"; conditions were never compared against
+   anything. The wording now says exactly what was done.
+8. **The analysis was produced from memory**, not from the artifact — which is
+   the failure `evidence-first-app-maintenance` names. `scripts/record_view.ps1`
+   now prints a derived view: structure, flags and gaps, never clinical values.
+9. **The report kind was inferred by string matching**, and `test_skill.py` only
+   checked `*.py`, so an unmentioned PowerShell script would never have been
+   caught. `due_report.ps1` now stamps `<!-- kind: review -->`; the validator
+   reads the stamp before inferring; the test checks every script.
+
+The pattern is worth stating: **every one of these was found by using the skill,
+not by reviewing it.** Four came from the first real case, five more from being
+asked to look at the analysis. The author reviewing his own work found none of
+them.
+
 ## How to run things
 
 ```powershell
