@@ -176,6 +176,10 @@ unless noted.
     medications and emergency contacts. **It was never built.** The README
     asserts an artefact that is not there. Not yet fixed: it is a deliberate hole
     in the encryption and needs the household's decision, not mine.
+16. **`Add-Member` on a hashtable silently loses the value.** It attaches a
+    PowerShell property that `ConvertTo-Json` does not serialise, so a note was
+    written and then vanished with no warning. Set keys with
+    `$hashtable['key'] = value`. Add this to the environment traps below.
 
 ## How to run things
 

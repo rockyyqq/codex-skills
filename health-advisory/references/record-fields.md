@@ -94,7 +94,7 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by`, `note` |
 | onset report | `when`, `informant`, `approximate` | `precision`, `note` |
 | medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason`, `note` |
-| allergy | `substance`, `reaction`, `last_confirmed` | — |
+| allergy | `substance`, `reaction`, `last_confirmed` | `note` |
 | family history | `relative`, `condition` | `age_at_diagnosis`, `side` |
 | measurement | `name`, `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
 | planned procedure | `code`, `status`, `planned_for`, `pre_op_outstanding` | `name`, `tosp_table`, `setting`, `source` |
