@@ -1,7 +1,7 @@
 # health-advisory — handover
 
-Written 2026-09-18. State: **4 of 5 tasks in plan 1 complete and committed;
-Task 5 not started.** Nothing has been pushed.
+Written 2026-09-18. State: **plan 1 complete — all 5 tasks committed and
+verified. Plan 2 not started.** Nothing has been pushed.
 
 ## Where everything lives
 
@@ -13,8 +13,8 @@ Task 5 not started.** Nothing has been pushed.
 | Implementation plan 1 (machinery) | `docs/plans/2026-09-18-health-advisory-machinery.md` |
 | Progress ledger (git-ignored) | `.superpowers/sdd/2026-09-18-health-advisory-machinery/progress.md` |
 
-Branch: `health-advisory-machinery`. `main` is at `3e20e68`; the branch is 5
-commits further on.
+Branch: `health-advisory-machinery`. `main` is at `3e20e68`; the branch is 7
+commits further on. `health-advisory/` is 13 files, 638 lines.
 
 **Nothing is pushed.** `origin/main` is at `5bce72d`, so the spec, the plan and
 all five task commits exist only on this machine. The branch is not on the
@@ -28,6 +28,7 @@ remote at all.
 | `0d082dd` | `check_sources.py` + `singapore-sources.json` + its test |
 | `80aafb4` | three Singapore sources verified and dated |
 | `18055ea` | `build_query.py` (de-identification) + its test |
+| `d5673d1` | `validate_report.py` + its test |
 | `cc614c8` | `.gitignore` for `.superpowers/` |
 
 Evidence, not assertion:
@@ -42,27 +43,39 @@ Evidence, not assertion:
   fails naming it.
 - **Query builder**: 10/10 checks pass. `"my 4-year-old in Singapore was given
   ibuprofen"` is refused with `age` and `location` flagged, exit 2.
+- **Report validator**: 7/7 checks pass. All five machinery checks exit 0 in a
+  single run.
 
 The vault now holds `records/household_health.json` — an encrypted, empty
 schema-2 record written as Task 1's proof. No personal data.
 
 ## The next action
 
-**Task 5, the report validator.** In the plan, at `### Task 5: The report
-validator`. Same shape as the last four:
+**Write plan 2.** Plan 1's closing section lists what it must cover:
 
-1. Write `health-advisory/tests/test_validate_report.py` from the plan (Step 1).
-   It already uses a `quiet()` helper, so no output-noise fix is needed.
-2. Run it — expect `ModuleNotFoundError: No module named 'validate_report'`.
-3. Write `health-advisory/scripts/validate_report.py` (Step 3).
-4. Run `python health-advisory/tests/test_validate_report.py` — expect 7 PASS.
-5. Run every check in the machinery (Step 5, the five commands).
-6. Commit (Step 6).
+1. `due_report.ps1` — the periodic review. It reads the vault, so it is
+   PowerShell, and it must write its output to a file while printing only
+   counts, so no report content reaches the session store.
+2. The reference prose: `source-ladder.md`, `urgency.json` + `urgency.md`,
+   `record-fields.md`.
+3. `SKILL.md` and `agents/openai.yaml` — **without these the skill does not load
+   in Codex at all**, so this is the step that makes it usable.
+4. Publication scaffolding from spec section 11 — deferred until after the
+   private-use period.
 
-Then plan 2, which the plan's closing section lists: `due_report.ps1`, the
-reference prose (`source-ladder.md`, `urgency.json`, `urgency.md`,
-`record-fields.md`), `SKILL.md`, `agents/openai.yaml`, and the publication
-scaffolding from spec section 11.
+Follow the same shape as plan 1: a spec-complete plan with verbatim code, then
+TDD per task. Write it to `docs/plans/`.
+
+### A known gap to fold into plan 2
+
+The spec defines the order of operations *for a symptom question* but never
+branches between question types. So today "what is HbA1c?" and "my chest hurts"
+would get identical treatment — a full evidence sweep with a 12-month literature
+check. The three-class triage (terminology / effectiveness / symptom, each with
+its own process and effort) was discussed but **never written into the spec**.
+Adding it is a ~20-line spec amendment, plus one rule: **announce the routing**
+("this is a drug-interaction question, so I'm going to the label") so a misroute
+is visible rather than silently producing a confidently wrong shape of answer.
 
 ## How to run things
 
