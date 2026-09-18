@@ -5,9 +5,9 @@ effect wrongly in the direction of the interesting result, and it spends
 participants to do it. Power is a design decision, taken while the protocol can
 still change, and it is judged as a piece of reasoning rather than as a number.
 
-Distilled from the `statistical-power` skill in Scientific Agent Skills
-(K-Dense Inc., v1.1, MIT), with Lakens (2022), Cohen (1988) and Arnold et al.
-(2011) as the underlying sources.
+Distilled from the `statistical-power` skill in K-Dense's Scientific Agent Skills
+library (v1.1, MIT) - a source, not a skill installed alongside this one - with
+Lakens (2022), Cohen (1988) and Arnold et al. (2011) as the underlying sources.
 
 ## Four quantities, locked together
 
