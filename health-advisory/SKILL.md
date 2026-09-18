@@ -82,6 +82,13 @@ Read `references/record-fields.md`. The vault is
 - **Scripts print counts and IDs, never record content.** Everything read into a
   conversation is written to the local session store in plaintext and persists.
   This is the load-bearing privacy rule; encryption does not substitute for it.
+- **Provenance is asked for, never inferred from appearance.** A clinic letter, a
+  screenshot, a prescription photo and an AI-generated summary all *look* like
+  documents, and they carry different weight. A summary of the household's own
+  account is the household's account at one remove — it can contain detail no
+  clinician said, and it can silently change a label. **Establish what something
+  is before recording it as sourced**, and ask rather than assume: the price of
+  getting this wrong is a record that overstates its own evidence.
 - `scripts/due_report.ps1` writes the periodic review to a file and prints counts.
   It reports **OK**, **DUE** or **CANNOT JUDGE** — the third is not a pass.
 - Facts and assumption-dependent items never merge. A due screening is a fact; a

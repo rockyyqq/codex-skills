@@ -146,6 +146,37 @@ not by reviewing it.** Four came from the first real case, five more from being
 asked to look at the analysis. The author reviewing his own work found none of
 them.
 
+## Third round: three real cases, and a documented artefact that never existed
+
+Using it on the household itself — a child's surgery, an adult's sinus and
+medication, and a second adult's five-month rash — surfaced more. All fixed
+unless noted.
+
+10. **Provenance was inferred from appearance, and it was wrong.** A ChatGPT
+    summary of the household's own account was read as a clinical referral
+    letter: `reported_by` said "relaying a dermatologist assessment", and all six
+    medications were recorded `source: label` when no label was ever seen. The
+    knock-on was worse than the label: it *inverted* a finding, since the summary's
+    diagnosis word differed from the household's own. New rule in SKILL.md and
+    the field docs: **provenance is asked for, never inferred.**
+11. **An unasked section was recorded as "none".** `family_history: []` and
+    `events: []` mean "asked and there are none". Nobody had asked. Both are now
+    `null`, and the shared gap function covers every section.
+12. **Measurements had no name, and blood pressure is two numbers.** `110` with
+    unit `mg/dL` did not say what it was. `name` is now required and `value` may
+    be a string for paired readings like `"97/60"`.
+13. **A gap list implemented twice drifted** — `record_view` named a missing
+    allergy list, `due_report` did not. Now one `record_gaps.ps1`.
+14. **`@($null).Count` is 1, not 0**, so a null section displayed as one item.
+    And a multi-element array in the review stringified to `System.Object[]`
+    — hidden until a record had two items.
+15. **The emergency card does not exist.** `records/emergency-card.md` is named
+    in the vault's own README as "the one deliberate exception to the
+    encryption", and spec section 6 says it holds blood type, allergies, current
+    medications and emergency contacts. **It was never built.** The README
+    asserts an artefact that is not there. Not yet fixed: it is a deliberate hole
+    in the encryption and needs the household's decision, not mine.
+
 ## How to run things
 
 ```powershell

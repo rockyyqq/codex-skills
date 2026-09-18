@@ -82,9 +82,10 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | Level | Required | Optional |
 |---|---|---|
 | document | `schema`, `people` | `as_of` |
-| person | `conditions`, `medications`, `allergies` | `age_band`, `family_history`, `measurements`, `lifestyle`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| person | `conditions`, `medications`, `allergies` | `age_band`, `blood_type`, `family_history`, `measurements`, `lifestyle`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| blood type | `value`, `source`, `last_confirmed` | — |
 | lifestyle | `name`, `value`, `last_confirmed` | `note` |
-| condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by` |
+| condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by`, `note` |
 | onset report | `when`, `informant`, `approximate` | `precision`, `note` |
 | medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason` |
 | allergy | `substance`, `reaction`, `last_confirmed` | — |
@@ -138,3 +139,24 @@ exists to stop.
 `conditions_of_measurement` matters more than it looks for a home reading: which
 arm, seated or standing, how long after activity or a meal. A blood pressure
 without its conditions is close to uninterpretable.
+
+## `condition.note` holds what is not the diagnosis
+
+Morphology, what relieves and what aggravates, a second label a clinician used, a
+diagnosis described as "considered" rather than confirmed. None of that is the
+diagnosis name, and without a note it has nowhere to go — so it gets dropped, and
+dropped detail is how a record becomes less useful than the patient.
+
+The note is where a **disagreement between labels is preserved rather than
+resolved**, in the same way a conflicting onset is kept as two reports.
+
+## Provenance is recorded, and it is asked for
+
+`reported_by` on a condition and `source` on a medication are not decoration.
+They are the difference between a clinician's finding, the household's account,
+and a summary of that account produced by something else.
+
+**A document's appearance does not establish its source.** An AI-generated
+summary of the household's own description reads like a clinical history and is
+not one; it can add, smooth and rename. Record which it is, and when the source
+is not established, ask before writing it down.

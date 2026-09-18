@@ -20,10 +20,10 @@ $SUPPORTED_SCHEMA = @(3)
 $KNOWN_TOP        = @('schema', 'as_of', 'people')
 $REQUIRED_TOP     = @('schema', 'people')
 $KNOWN_PERSON     = @('age_band', 'conditions', 'medications', 'allergies', 'family_history',
-                      'measurements', 'lifestyle', 'treatments_tried', 'treatments_tried_note',
+                      'measurements', 'lifestyle', 'blood_type', 'treatments_tried', 'treatments_tried_note',
                       'planned_procedures', 'events')
 $REQUIRED_PERSON  = @('conditions', 'medications', 'allergies')
-$KNOWN_CONDITION  = @('name', 'last_confirmed', 'onset_reports', 'onset_unknown', 'onset_conflict', 'severity', 'reported_by')
+$KNOWN_CONDITION  = @('name', 'last_confirmed', 'onset_reports', 'onset_unknown', 'onset_conflict', 'severity', 'reported_by', 'note')
 $REQUIRED_CONDITION = @('name', 'last_confirmed')
 $KNOWN_ONSET      = @('when', 'precision', 'informant', 'approximate', 'note')
 $REQUIRED_ONSET   = @('when', 'informant', 'approximate')
@@ -41,6 +41,8 @@ $KNOWN_EVENT      = @('id', 'kind', 'code', 'last_done', 'interval_months', 'bas
 $REQUIRED_EVENT   = @('id', 'kind', 'code', 'last_done', 'interval_months', 'basis', 'source_id')
 $KNOWN_LIFESTYLE  = @('name', 'value', 'last_confirmed', 'note')
 $REQUIRED_LIFESTYLE = @('name', 'value', 'last_confirmed')
+$KNOWN_BLOODTYPE  = @('value', 'source', 'last_confirmed')
+$REQUIRED_BLOODTYPE = @('value', 'source', 'last_confirmed')
 
 $problems = [System.Collections.Generic.List[string]]::new()
 
@@ -76,6 +78,11 @@ if ($record.ContainsKey('people')) {
         }
         $person = $record['people'][$personKey]
         Test-Keys -Object $person -Known $KNOWN_PERSON -Required $REQUIRED_PERSON -Where $personKey
+
+        if ($person['blood_type']) {
+            Test-Keys -Object $person['blood_type'] -Known $KNOWN_BLOODTYPE -Required $REQUIRED_BLOODTYPE `
+                      -Where "${personKey}/blood_type"
+        }
 
         foreach ($section in @(
             @{ name = 'conditions';       known = $KNOWN_CONDITION;  required = $REQUIRED_CONDITION }
