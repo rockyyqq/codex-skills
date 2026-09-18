@@ -32,7 +32,11 @@ Rank by severity. "Nothing found in area X" is a valid entry and worth stating.
 
 > You are the verifier. The deliverable is <path>. Check every consequential claim, number, formula and
 > citation in it against <primary sources>. Re-derive the numbers yourself rather than reading them out of
-> the draft. You do not edit anything and you do not decide what to fix; you report. For each item use the
+> the draft. Where a number was measured, read or transcribed out of another artefact - a chart image, a
+> scan, a PDF - start again from that artefact; reusing the tool that produced the author's extraction is
+> allowed, but a sample of the values must also be checked by eye against the source, or a systematic error
+> in that tool passes straight through your check and reads as agreement. You do not edit anything and you
+> do not decide what to fix; you report. For each item use the
 > finding format: what, where, evidence, confidence, severity. Mark items you cannot check as unverifiable
 > rather than guessing, and name the source you would need. Work from the highest-consequence items down;
 > do not pad the report with trivia. Write to <path> and reply with your top findings.

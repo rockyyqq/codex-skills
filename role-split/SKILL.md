@@ -39,7 +39,7 @@ carry weight, the designer when the artefact is visual and its correctness is no
 ## Roles
 
 - **Builder** - produces the artefact. Usually the main agent.
-- **Verifier** - re-derives every consequential claim, number, formula and citation from a primary source.
+- **Verifier** - re-derives every consequential claim, number, formula and citation from a primary source. When a number was itself derived from an artefact - measured off an image, scanned from a PDF, transcribed from a report - that artefact is the primary source, and the verifier re-derives from it rather than reading the author's extraction.
 - **Adversary** - assumes the work fails, and argues the strongest case against it: gaps, overreach, unstated assumptions, what an expert or an end user would attack.
 - **Designer** - judges a visual artefact from its rendered output rather than its source. Include it only when the deliverable is a deck, poster, infographic or chart-heavy page, and never for text documents, analysis or code. Read [references/designer-role.md](references/designer-role.md) when it applies.
 - **Audience or delivery** - judges the work under the conditions it will actually be used in: projected, timed, read by a decision maker, run by a caller.
