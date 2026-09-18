@@ -1,6 +1,32 @@
 {
   "_note": "Every entry names its source, the date it was confirmed, and the date it must be re-checked. check_sources.py fails the whole report on any entry that is unverified or past its review date. Do not add an entry without fetching it first.",
+  "_fetch_note": "moh.gov.sg and hsa.gov.sg return 403 to a default curl/bot user agent and 200 to a browser user agent. Any future fetch of these must set one, or the source will look dead when it is not.",
   "jurisdiction": "Singapore",
   "last_reviewed": "2026-09-18",
-  "sources": []
+  "sources": [
+    {
+      "id": "SG-MOH-CPG",
+      "title": "Clinical Guidelines — Ministry of Health",
+      "url": "https://www.moh.gov.sg/newsroom/clinical-guidelines/",
+      "class": "guideline",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    },
+    {
+      "id": "SG-HSA-CONSUMER-SAFETY",
+      "title": "Consumer safety — Health Sciences Authority",
+      "url": "https://www.hsa.gov.sg/consumer-safety/",
+      "class": "regulator",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "SG-HEALTHHUB-CONDITIONS",
+      "title": "Health Conditions — HealthHub (patient information)",
+      "url": "https://www.healthhub.sg/health-conditions",
+      "class": "patient-education",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    }
+  ]
 }
