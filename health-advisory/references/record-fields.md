@@ -88,7 +88,7 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | Level | Required | Optional |
 |---|---|---|
 | document | `schema`, `people` | `as_of` |
-| person | `conditions`, `medications`, `allergies` | `age_band`, `blood_type`, `family_history`, `measurements`, `lifestyle`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
+| person | `conditions`, `medications`, `allergies` | `relationship`, `age_band`, `blood_type`, `family_history`, `measurements`, `lifestyle`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
 | blood type | `value`, `source`, `last_confirmed` | — |
 | lifestyle | `name`, `value`, `last_confirmed` | `note` |
 | condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by`, `note` |
@@ -145,6 +145,24 @@ exists to stop.
 `conditions_of_measurement` matters more than it looks for a home reading: which
 arm, seated or standing, how long after activity or a meal. A blood pressure
 without its conditions is close to uninterpretable.
+
+## Role labels need a relationship
+
+`child-a` and `adult-b` are anonymised identifiers: they carry no names, which is
+the point. But they also carry no meaning, so nothing in the record says which
+person is the daughter, the son, the mother or the father — and a household read
+months later cannot tell them apart.
+
+`relationship` supplies that in one word (`daughter`, `son`, `mother`, `father`)
+without breaking the no-identifiers rule. A relationship is not an identifier;
+a name is.
+
+## Family history is blood relatives
+
+A spouse's conditions are **not** family history for the other spouse — a
+spouse is not a blood relative. They are household context, and they live in the
+spouse's own record. For a child, both parents and any sibling are blood
+relatives, so all of their conditions belong in the child's family history.
 
 ## `condition.note` holds what is not the diagnosis
 

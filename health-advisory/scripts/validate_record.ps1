@@ -19,7 +19,7 @@ $SUPPORTED_SCHEMA = @(3)
 
 $KNOWN_TOP        = @('schema', 'as_of', 'people')
 $REQUIRED_TOP     = @('schema', 'people')
-$KNOWN_PERSON     = @('age_band', 'conditions', 'medications', 'allergies', 'family_history',
+$KNOWN_PERSON     = @('relationship', 'age_band', 'conditions', 'medications', 'allergies', 'family_history',
                       'measurements', 'lifestyle', 'blood_type', 'treatments_tried', 'treatments_tried_note',
                       'planned_procedures', 'events')
 $REQUIRED_PERSON  = @('conditions', 'medications', 'allergies')

@@ -39,7 +39,9 @@ Write-Output "schema: $($record['schema'])  as_of: $($record['as_of'])"
 foreach ($personKey in @($record['people'].Keys)) {
     $person = $record['people'][$personKey]
     Write-Output ""
-    Write-Output "person: $personKey"
+    # The label alone means nothing; the relationship is what makes it readable.
+    $who = if ($person['relationship']) { $person['relationship'] } else { 'relationship NOT RECORDED' }
+    Write-Output "person: $personKey ($who)"
     Write-Output "  age_band: $(if ($person['age_band']) { 'present' } else { 'ABSENT' })"
 
     foreach ($section in @('conditions', 'medications', 'allergies', 'family_history', 'measurements', 'planned_procedures', 'events')) {

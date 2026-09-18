@@ -13,6 +13,7 @@ function Get-RecordGaps {
     param([Parameter(Mandatory)]$Person)
 
     $gaps = @()
+    if (-not $Person['relationship']) { $gaps += 'relationship not recorded' }
     # Every section that can be "not recorded". An empty list means "asked and
     # there are none"; null means nobody asked. Writing [] for an unasked section
     # asserts something untrue, which is how both records were first written.
