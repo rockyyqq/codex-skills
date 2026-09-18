@@ -7,7 +7,10 @@ method, not shared team standards.
 
 | Skill | Invoke with | What it does |
 |---|---|---|
+| `evidence-first-app-maintenance` | automatic when keeping an existing app working, or name it | Holds the evidence loop for work on something that already exists: know the state before touching it, make the slice small enough to prove it, prove the checks can fail, read the built artefact back rather than trusting the build log, and leave a page the next session can act on. Defers to `test-driven-development` for a new test, `verification-before-completion` before claiming done, and `systematic-debugging` when a cause is unclear. |
+| `investment-review` | "is X worth holding", "should I buy X", "would you change your answer on X", or name it | Reviews one investment end to end: what the instrument is, what the case claims, whether the claim is checkable, whether it addresses the price, what the price history shows, how the valuation compares with the alternative, and whether the household already owns the exposure. The case reading and the price reading are reported in separate sections and never combined into a verdict - where they disagree, the disagreement is the finding. Ships `appraise.py`. |
 | `poster-review` | automatic on poster work, or name it | Standing requirements for conference, scientific and competition posters: PowerPoint output built from native objects, section order (Background, Methods, Participants, Results, Discussion), prose-versus-bullets rules, chart and data checks, event compliance, and independent verification of the finished deck. |
+| `reproducing-charts-from-images` | "make me this same graph", or name it | Rebuilds a chart from a reference image by measuring pixels rather than reading values off the axis, then recovers the design from the same image. Keeps one row order and one data source across the figure, the workbook and the table, and hands the recovered values to an independent verifier with the author's own numbers withheld. Ships `digitize_chart.py`. |
 | `research` | ask for a literature review, an evidence table or a citation check, or name it | Sources, appraises and cites evidence for health and mental health services research: framing a searchable question, logging a reproducible search, screening and extracting into evidence tables, appraising design and independence, reading or running a meta-analysis, checking a measure before comparing scores, and formatting references to the journal's style. Ships `check_citations.py`. |
 | `role-split` | `$role-split` | Splits a task into independent roles - builder plus at least one verifier who falsifies the result against a source the author did not write - and adds a design reviewer for visual work. Tiers: `$role-split no split` (one self-check pass), `$role-split simple` (2 roles), `$role-split complex` (up to 4). For high-stakes, externally presented work. |
 | `technical-analysis` | ask about a chart, a level or an indicator, or name it | Reads a listed security's price and volume history - trend, support and resistance, moving averages, momentum and volatility, chart patterns, and the arithmetic that turns an entry and a stop into a position size. States the limits before the reading: an indicator transforms past price rather than informing, and "will it hold" has no answer. Ships `analyse.py`, `valuation.py` and an OpenD probe. |
@@ -22,11 +25,13 @@ Each skill is a folder whose name matches the `name` field in its `SKILL.md` fro
   SKILL.md              always present, carries the name and the trigger description
   agents/openai.yaml    display name, short description and default prompt for the UI
   references/           the detail files SKILL.md points to
-  scripts/              only in research, technical-analysis and wealth-advisory
+  scripts/              only in the five skills that carry code
 ```
 
-The three skills that carry code:
+The five skills that carry code:
 
+- `investment-review/scripts/` - `appraise.py`
+- `reproducing-charts-from-images/scripts/` - `digitize_chart.py`
 - `research/scripts/` - `check_citations.py`
 - `technical-analysis/scripts/` - `analyse.py`, `valuation.py`, `opend_probe.py`
 - `wealth-advisory/scripts/` - `market_data.py` and `common.py` are shared by the rest;
@@ -52,6 +57,15 @@ credentials or a `GITHUB_TOKEN`.
 
 For personal plugin packaging (so the skills appear on the app's Plugins page and can be shared
 as a bundle), see `$plugin-creator` - a plugin is a manifest plus a `skills/` folder.
+
+## Installed, but not authored here
+
+`peer-review` sits in this folder but is not part of this repository. It is the
+`peer-review` skill from Scientific Agent Skills by K-Dense (MIT), installed with
+`$skill-installer` and ignored by `.gitignore` so it stays updatable from upstream. Its
+premise is different from the skills above - it supports an *accountable human reviewer* of
+someone else's manuscript, under a mandatory authorization and confidentiality gate, and it
+refuses to write an accept/reject recommendation at all.
 
 ## What must never be committed here
 

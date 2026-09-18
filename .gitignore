@@ -4,6 +4,9 @@
 # Local snapshot backups of skills
 .backup/
 
+# Installed third-party skills: not authored here
+peer-review/
+
 # OS and editor noise
 Thumbs.db
 desktop.ini
