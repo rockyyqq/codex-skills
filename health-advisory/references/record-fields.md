@@ -79,6 +79,12 @@ No names. No full dates of birth — year or age band only. No national ID, no
 address, no phone number, no email. `validate_report.py` rejects a generated
 report containing any of these patterns.
 
+**The patterns themselves are Singapore-shaped** — the NRIC format, `+65` phone
+numbers, the "7 July 2026" date form. A check keyed to one country's formats does
+not notice another country's, so the identifier list is one of the four things
+that must be re-verified rather than carried across a relocation. See
+`source-ladder.md`.
+
 **All dates in the record are ISO** — `2026-09-18`. A date written as
 "7 July 2026" is indistinguishable from a date of birth, which is the shape the
 privacy check exists to catch, so the check flags it. Writing every date in ISO

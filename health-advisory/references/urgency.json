@@ -2,6 +2,8 @@
   "_note": "The emergency gate. Checked before any retrieval, for every question class, before any explanation is written. An entry here means: say this first. Never add an entry without a source_id that exists in sources.json.",
   "_scope": "Paediatric presentations only, because that is what the verified source covers. Adult red flags are a known gap — see urgency.md.",
   "gate_id": "urgency",
+  "jurisdiction": "Singapore",
+  "_jurisdiction_note": "The emergency action in every entry is local - it names 995. This gate is therefore bound to Singapore and must be re-verified, not carried, if the household relocates. The paediatric presentation list needs the same treatment.",
   "runs_before": "all",
   "entries": [
     {

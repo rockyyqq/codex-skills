@@ -180,6 +180,18 @@ unless noted.
     PowerShell property that `ConvertTo-Json` does not serialise, so a note was
     written and then vanished with no warning. Set keys with
     `$hashtable['key'] = value`. Add this to the environment traps below.
+17. **The ledger was jurisdiction-bound while the ladder read as neutral.** The
+    source ladder had always named NICE, WHO and Cochrane; the ledger held four
+    Singapore entries and nothing else, so an international source could be cited
+    and never dated or staleness-checked. Fixed: `singapore-sources.json` became
+    `sources.json`, every entry carries `jurisdiction`, and WHO / NICE /
+    MedlinePlus were fetched and added. Also recorded: **Cochrane returns 403 to
+    automated fetches** (retrieve from PubMed or Europe PMC instead) and **FDA
+    returns 404**. Found by the household reading the skill, not by using it.
+18. **Generalised from 17**: several rules here read as general and are not.
+    Listed in `source-ladder.md` — the 995 emergency number, screening
+    programmes, subsidies and licensing, and the Singapore-shaped identifier
+    patterns. A relocation re-verifies those four, and nothing else.
 
 ## How to run things
 

@@ -24,6 +24,23 @@ Two classes, both dated, both in `sources.json`:
 So the rule is not "local first" or "international first". It is: **match the
 source to the question**, and date every source whichever class it belongs to.
 
+### What in this skill is jurisdiction-bound
+
+That finding generalises, and several rules here read as general when they are
+not. Worth knowing which, before the household moves or travels:
+
+| Bound to Singapore | Why it breaks elsewhere |
+|---|---|
+| The emergency number in `urgency.json` — 995 | Wrong in every other country, and wrong silently |
+| Screening programmes and their intervals | Countries screen different things, at different ages, on different schedules |
+| Subsidies, licensing, and what is dispensed here | Local by definition |
+| Identifier patterns — the NRIC shape and `+65` phone numbers | A check keyed to one country's formats does not notice another's |
+
+**A relocation does not invalidate the skill; it invalidates these four things**,
+each of which is re-verified rather than rewritten. And the international half —
+what works, what the guidance says — travels unchanged, which is the whole point
+of keeping the two classes apart.
+
 ## Reviews first, with named fall-throughs
 
 A systematic review is used when it fits. Move to `primary-study` in five cases,
