@@ -89,6 +89,11 @@ Read `references/record-fields.md`. The vault is
   clinician said, and it can silently change a label. **Establish what something
   is before recording it as sourced**, and ask rather than assume: the price of
   getting this wrong is a record that overstates its own evidence.
+- **A record's gaps track who was asked, not who is unwell.** In this household
+  the two members interviewed directly had 2 and 4 gaps; the two answered for by
+  a proxy had 5 and 8. The member with the most gaps held the only clinically
+  tested finding in the household. **Never read detail as severity** — read it as
+  evidence of who was interviewed, and ask the people nobody has asked.
 - `scripts/due_report.ps1` writes the periodic review to a file and prints counts.
   It reports **OK**, **DUE** or **CANNOT JUDGE** — the third is not a pass.
 - Facts and assumption-dependent items never merge. A due screening is a fact; a
@@ -117,6 +122,7 @@ Read only what the task needs.
 - `references/routing.json` — question class to process
 - `references/source-ladder.md` — which source class answers which question
 - `references/record-fields.md` — the record schema and its five rules
+- `references/writing-the-record.md` — the four traps that make a write fail quietly
 - `references/singapore-sources.json` — verified sources with review dates
 
 ## What this skill is not

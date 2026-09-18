@@ -190,3 +190,60 @@ and a summary of that account produced by something else.
 summary of the household's own description reads like a clinical history and is
 not one; it can add, smooth and rename. Record which it is, and when the source
 is not established, ask before writing it down.
+
+## Ask whoever can observe it — not whoever is closest
+
+**The right informant depends on the symptom, not on who holds the record.**
+
+- **Throat phlegm, pain, mood, how something feels** — the person. These relocate
+  when they travel. Two descriptions in this household arrived second-hand and
+  both were wrong: "sinus symptoms" was a throat problem, and an "eczema-like"
+  label came back from a summary as "urticarial". Neither informant was lying;
+  a description moving through another person changes where it points.
+- **Snoring, breathing at night, a rash on someone's back** — an observer. A
+  person cannot report what happens while they are asleep, and "I don't know, I
+  was asleep" is a correct answer. Here the observer supplied the frequency, the
+  loudness, the aggravating factor, and a next-morning consequence the person
+  could never have connected to the night before.
+
+So the rule is not "first-hand always wins". It is **ask whoever is in a position
+to know**, and record which it was. When a record was built from a proxy and the
+person later answers, their account replaces the proxy's — and say so, because
+the correction is itself information.
+
+## An unquantified descriptor is not an entry
+
+"Severe", "quite bad", "occasionally", "a lot" are the shape of a finding with the
+content missing.
+
+One entry in this household read *"a severe allergic reaction"*. Asked what
+actually happened, it became: generalised plaques a centimetre or two across from
+head to foot, one joining the next, **no throat swelling, no breathing
+difficulty**, taken to A&E, a high-dose oral antihistamine, no injection, resolved
+in about a week.
+
+**Those are different histories.** One with airway involvement is not the same as
+one without, and the adjective did not distinguish them. When a descriptor
+arrives, ask what was seen or what happened and record that. The adjective can
+stay; it cannot stand alone.
+
+## Preserve conflict; never average it
+
+Two informants giving different onsets. A clinician using two labels. A symptom
+described as both occasional and constantly present. None of these is resolved by
+picking one, and none is improved by splitting the difference.
+
+Record both, mark the conflict, and where the difference might be a real
+distinction rather than a contradiction, say that too — a constant sensation and
+occasional episodes may be two true statements about one symptom. **A record that
+smooths a conflict has made a decision nobody asked it to make.**
+
+## One treatment, several outcomes
+
+A treatment can work on one symptom and fail on another, in the same person at the
+same time. In this household one medicine clearly reduced snoring frequency and
+did not reduce throat phlegm.
+
+Recorded as a single outcome, the finding becomes "it doesn't work much", and the
+improvement vanishes. Recorded as two, both survive — and the second is evidence
+the medicine *is* doing something, which is worth having.
