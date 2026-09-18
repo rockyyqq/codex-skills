@@ -16,7 +16,7 @@ function Get-RecordGaps {
     # Every section that can be "not recorded". An empty list means "asked and
     # there are none"; null means nobody asked. Writing [] for an unasked section
     # asserts something untrue, which is how both records were first written.
-    foreach ($section in @('conditions', 'medications', 'allergies', 'family_history', 'measurements')) {
+    foreach ($section in @('conditions', 'medications', 'allergies', 'family_history', 'measurements', 'events')) {
         if ($null -eq $Person[$section]) { $gaps += "$section not recorded" }
     }
     if ($null -eq $Person['treatments_tried']) { $gaps += 'treatments_tried not recorded' }
