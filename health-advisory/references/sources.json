@@ -1,7 +1,7 @@
 {
   "_note": "Every entry names its source, the date it was confirmed, and the date it must be re-checked. check_sources.py fails the whole report on any entry that is unverified or past its review date. Do not add an entry without fetching it first. Thresholds: 12 months for a guideline or patient-education index, 6 months for a regulator or emergency-guidance feed.",
   "_scope": "Two jurisdictions, both dated. 'Singapore' answers local care questions - emergency criteria, screening programmes, subsidies, licensed products. 'international' answers evidence questions - whether something works and what the guidance says. Whether a treatment works does not change at a border; what to do at 2am does.",
-  "_fetch_note": "moh.gov.sg and hsa.gov.sg return 403 to a default curl/bot user agent and 200 to a browser one. cochranelibrary.com returned 403 to every automated fetch tried (Cloudflare). fda.gov returned 404 to this client. Cochrane reviews are indexed in PubMed and Europe PMC, so retrieve them there rather than from Cochrane directly.",
+  "_fetch_note": "moh.gov.sg and hsa.gov.sg return 403 to a default curl/bot user agent and 200 to a browser one. cochranelibrary.com returned 403 to every automated fetch tried (Cloudflare). fda.gov returned 404 to this client. healthhub.sg index pages fetch cleanly, but ARTICLE BODIES DO NOT: the hypertension page returns 200 with the right title and contains no blood pressure numbers at all - the body is loaded client-side. Treat healthhub.sg as a citable source a human can open, not as a machine-readable one. Cochrane reviews are indexed in PubMed and Europe PMC, so retrieve them there.",
   "last_reviewed": "2026-09-18",
   "sources": [
     {
@@ -66,6 +66,15 @@
       "jurisdiction": "international",
       "verified_on": "2026-09-18",
       "review_by": "2027-09-18"
+    },
+    {
+      "id": "SG-HEALTHIER-SG-SCREENING",
+      "review_by": "2027-03-18",
+      "url": "https://www.healthhub.sg/programmes/healthiersg-screening",
+      "title": "Healthier SG Screening - National Health Screening Programme (Health Promotion Board)",
+      "verified_on": "2026-09-18",
+      "class": "screening-guidance",
+      "jurisdiction": "Singapore"
     }
   ]
 }
