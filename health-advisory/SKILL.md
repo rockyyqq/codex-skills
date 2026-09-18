@@ -79,6 +79,10 @@ Read `references/record-fields.md`. The vault is
 - `scripts/record_gaps.ps1` holds the single definition of what counts as a gap.
   Both the view and the review use it, because two implementations of one rule
   drift — and they did, disagreeing about whether a missing allergy list was a gap.
+- **A family analysis has a fixed structure.** When the household asks for one,
+  read `references/analysis-template.md` and follow its nine sections in order.
+  The informant column is the part easiest to drop and the part that matters
+  most: gap counts track who was interviewed, not who is unwell.
 - **Scripts print counts and IDs, never record content.** Everything read into a
   conversation is written to the local session store in plaintext and persists.
   This is the load-bearing privacy rule; encryption does not substitute for it.
@@ -123,6 +127,7 @@ Read only what the task needs.
 - `references/source-ladder.md` — which source class answers which question
 - `references/record-fields.md` — the record schema and its five rules
 - `references/writing-the-record.md` — the four traps that make a write fail quietly
+- `references/analysis-template.md` — the nine-section structure for a family analysis, and what it excludes
 - `references/sources.json` — verified sources with review dates, local and international
 
 ## What this skill is not
