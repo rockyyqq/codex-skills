@@ -26,5 +26,10 @@ function Get-RecordGaps {
         if ($condition['onset_unknown']) { $gaps += 'onset unknown' }
         if (-not $condition['severity'])  { $gaps += 'severity not graded' }
     }
+    # An event with no sourced interval cannot be scheduled against anything.
+    foreach ($event in @($Person['events'])) {
+        if (-not $event) { continue }
+        if (-not $event['interval_months']) { $gaps += 'a screening event has no sourced interval' }
+    }
     return @($gaps | Select-Object -Unique)
 }

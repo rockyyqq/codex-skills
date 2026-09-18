@@ -21,6 +21,12 @@ surgical history is recorded without inventing a separate section.
 `events.basis` is `fact` or `assumption`, and it decides which section of the
 review the item appears in.
 
+**`interval_months` is optional, and must be sourced when present.** An event with
+a date but no sourced interval is a gap, not an error. Recording "a Pap smear in
+2025" is useful on its own, and inventing a three-year interval from memory is
+the kind of number this record refuses. The gap function reports such an event as
+*no sourced interval*, so the missing guideline stays visible.
+
 ## Onset reports, and who said so
 
 Duration is often the fact a decision turns on, and it is also the fact a
@@ -98,7 +104,7 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | family history | `relative`, `condition` | `age_at_diagnosis`, `side`, `note` |
 | measurement | `name`, `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
 | planned procedure | `code`, `status`, `planned_for`, `pre_op_outstanding` | `name`, `tosp_table`, `setting`, `source` |
-| event | `id`, `kind`, `code`, `last_done`, `interval_months`, `basis`, `source_id` | — |
+| event | `id`, `kind`, `code`, `basis` | `last_done`, `interval_months`, `source_id`, `note` |
 
 `schema` must be a version this skill knows. An unrecognised version is refused
 rather than read, so an old record cannot be silently misread by new code.
