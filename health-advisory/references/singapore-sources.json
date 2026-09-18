@@ -27,6 +27,14 @@
       "class": "patient-education",
       "verified_on": "2026-09-18",
       "review_by": "2027-09-18"
+    },
+    {
+      "id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "title": "Emergency Care (Children) — HealthHub, article last reviewed 16 December 2025",
+      "url": "https://www.healthhub.sg/health-conditions/children-emergencies",
+      "class": "emergency-guidance",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-03-18"
     }
   ]
 }

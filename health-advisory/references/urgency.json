@@ -1,0 +1,57 @@
+{
+  "_note": "The emergency gate. Checked before any retrieval, for every question class, before any explanation is written. An entry here means: say this first. Never add an entry without a source_id that exists in singapore-sources.json.",
+  "_scope": "Paediatric presentations only, because that is what the verified source covers. Adult red flags are a known gap — see urgency.md.",
+  "gate_id": "urgency",
+  "runs_before": "all",
+  "entries": [
+    {
+      "id": "URG-SKIN-COLOUR",
+      "presentation": "white, pale or mottled skin in an infant",
+      "action": "Get emergency help now.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-RESPONSE",
+      "presentation": "listlessness, or no response to stimuli such as a parent's voice or a vacant, glassy-eyed stare",
+      "action": "Get emergency help now.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-BREATHING",
+      "presentation": "laboured breathing — grunting, wheezing, a high-pitched whistling sound, or flared nostrils",
+      "action": "Get emergency help now.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-CHOKING",
+      "presentation": "a child who is unable to talk or breathe normally because of choking",
+      "action": "The child cannot breathe normally: call 995 for an ambulance, and begin CPR if there is no response.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-POISONING",
+      "presentation": "a child may have swallowed a poisonous liquid — vomiting, tremors, sweating, abdominal pain, burns around the lips or mouth, or loss of consciousness",
+      "action": "Seek emergency care now and report the child's age, weight and what may have been swallowed. Call 995 if the child is unconscious. Do not induce vomiting unless a doctor advises it.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-DROWNING",
+      "presentation": "accidental drowning, or a child found in water",
+      "action": "Seek emergency care now and call 995.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "URG-BURNS",
+      "presentation": "burns in a child",
+      "action": "Seek emergency care now.",
+      "source_id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "review_by": "2027-03-18"
+    }
+  ]
+}
