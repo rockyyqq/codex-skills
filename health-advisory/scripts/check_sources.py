@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 
 REQUIRED = ("id", "title", "url", "class", "verified_on", "review_by")
-DEFAULT_LEDGER = Path(__file__).resolve().parent.parent / "references" / "singapore-sources.json"
+DEFAULT_LEDGER = Path(__file__).resolve().parent.parent / "references" / "sources.json"
 
 
 def load(path):

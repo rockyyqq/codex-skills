@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 
 Assert-Boundary
 
-$ledgerPath = Join-Path $PSScriptRoot '..\references\singapore-sources.json'
+$ledgerPath = Join-Path $PSScriptRoot '..\references\sources.json'
 $todayDate  = if ($Today) { [datetime]::ParseExact($Today, 'yyyy-MM-dd', $null) } else { Get-Date }
 if (-not $OutDir) { $OutDir = Join-Path $script:VaultRoot 'reports' }
 

@@ -123,7 +123,7 @@ Read only what the task needs.
 - `references/source-ladder.md` — which source class answers which question
 - `references/record-fields.md` — the record schema and its five rules
 - `references/writing-the-record.md` — the four traps that make a write fail quietly
-- `references/singapore-sources.json` — verified sources with review dates
+- `references/sources.json` — verified sources with review dates, local and international
 
 ## What this skill is not
 

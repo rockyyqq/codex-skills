@@ -22,7 +22,7 @@ def urgency():
 
 
 def ledger_ids():
-    ledger = json.loads((REFS / "singapore-sources.json").read_text(encoding="utf-8"))
+    ledger = json.loads((REFS / "sources.json").read_text(encoding="utf-8"))
     return {source["id"] for source in ledger["sources"]}
 
 

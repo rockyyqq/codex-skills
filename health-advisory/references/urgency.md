@@ -17,7 +17,7 @@ prose would mean re-deriving it every time.
 
 An emergency list invented from general knowledge is exactly the artefact this
 skill exists to avoid. `test_urgency.py` fails on any entry whose `source_id` is
-not in `singapore-sources.json`, and on any whose `review_by` has passed.
+not in `sources.json`, and on any whose `review_by` has passed.
 
 ## The asymmetry
 
@@ -37,5 +37,5 @@ emergency presentations has been verified. Adding entries without a source would
 be inventing provenance, which is the one thing this file must not do.
 
 To close it, verify a source that states adult emergency presentations, add it to
-`singapore-sources.json` with `"class": "emergency-guidance"`, and add one entry
+`sources.json` with `"class": "emergency-guidance"`, and add one entry
 per presentation it names.

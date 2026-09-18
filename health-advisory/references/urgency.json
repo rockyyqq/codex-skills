@@ -1,5 +1,5 @@
 {
-  "_note": "The emergency gate. Checked before any retrieval, for every question class, before any explanation is written. An entry here means: say this first. Never add an entry without a source_id that exists in singapore-sources.json.",
+  "_note": "The emergency gate. Checked before any retrieval, for every question class, before any explanation is written. An entry here means: say this first. Never add an entry without a source_id that exists in sources.json.",
   "_scope": "Paediatric presentations only, because that is what the verified source covers. Adult red flags are a known gap — see urgency.md.",
   "gate_id": "urgency",
   "runs_before": "all",

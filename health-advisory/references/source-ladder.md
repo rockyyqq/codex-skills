@@ -8,6 +8,22 @@
 | Safety signal | `regulator` — HSA, FDA | news coverage |
 | What is X? | `patient-education` — HealthHub, MSD Manuals, MedlinePlus | a journal article |
 
+## Which jurisdiction, for which question
+
+Two classes, both dated, both in `sources.json`:
+
+- **Evidence questions** — does this work, what does the guidance say — **do not
+  change at a border.** Cochrane, WHO, NICE and the primary literature answer
+  them. A Singapore-only ledger leaves those sources undated and unchecked, while
+  the ladder above still cites them. That was a real defect: the ladder read as
+  jurisdiction-neutral while the ledger was not.
+- **Local care questions** — what to do at 2am, which screening programme applies,
+  what is subsidised, whether a product is licensed here — only a local source
+  answers. An international guideline will not tell you the emergency number.
+
+So the rule is not "local first" or "international first". It is: **match the
+source to the question**, and date every source whichever class it belongs to.
+
 ## Reviews first, with named fall-throughs
 
 A systematic review is used when it fits. Move to `primary-study` in five cases,

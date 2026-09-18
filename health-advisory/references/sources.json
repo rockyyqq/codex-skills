@@ -1,0 +1,71 @@
+{
+  "_note": "Every entry names its source, the date it was confirmed, and the date it must be re-checked. check_sources.py fails the whole report on any entry that is unverified or past its review date. Do not add an entry without fetching it first. Thresholds: 12 months for a guideline or patient-education index, 6 months for a regulator or emergency-guidance feed.",
+  "_scope": "Two jurisdictions, both dated. 'Singapore' answers local care questions - emergency criteria, screening programmes, subsidies, licensed products. 'international' answers evidence questions - whether something works and what the guidance says. Whether a treatment works does not change at a border; what to do at 2am does.",
+  "_fetch_note": "moh.gov.sg and hsa.gov.sg return 403 to a default curl/bot user agent and 200 to a browser one. cochranelibrary.com returned 403 to every automated fetch tried (Cloudflare). fda.gov returned 404 to this client. Cochrane reviews are indexed in PubMed and Europe PMC, so retrieve them there rather than from Cochrane directly.",
+  "last_reviewed": "2026-09-18",
+  "sources": [
+    {
+      "id": "SG-MOH-CPG",
+      "title": "Clinical Guidelines — Ministry of Health",
+      "url": "https://www.moh.gov.sg/newsroom/clinical-guidelines/",
+      "class": "guideline",
+      "jurisdiction": "Singapore",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    },
+    {
+      "id": "SG-HSA-CONSUMER-SAFETY",
+      "title": "Consumer safety — Health Sciences Authority",
+      "url": "https://www.hsa.gov.sg/consumer-safety/",
+      "class": "regulator",
+      "jurisdiction": "Singapore",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "SG-HEALTHHUB-CONDITIONS",
+      "title": "Health Conditions — HealthHub (patient information)",
+      "url": "https://www.healthhub.sg/health-conditions",
+      "class": "patient-education",
+      "jurisdiction": "Singapore",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    },
+    {
+      "id": "SG-HEALTHHUB-CHILD-EMERGENCY",
+      "title": "Emergency Care (Children) — HealthHub, article last reviewed 16 December 2025",
+      "url": "https://www.healthhub.sg/health-conditions/children-emergencies",
+      "class": "emergency-guidance",
+      "jurisdiction": "Singapore",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-03-18"
+    },
+    {
+      "id": "INT-WHO-GUIDELINES",
+      "title": "WHO Guidelines — World Health Organization",
+      "url": "https://www.who.int/publications/who-guidelines",
+      "class": "guideline",
+      "jurisdiction": "international",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    },
+    {
+      "id": "INT-NICE-GUIDANCE",
+      "title": "NICE guidance — National Institute for Health and Care Excellence",
+      "url": "https://www.nice.org.uk/guidance",
+      "class": "guideline",
+      "jurisdiction": "international",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    },
+    {
+      "id": "INT-MEDLINEPLUS",
+      "title": "MedlinePlus — US National Library of Medicine (patient information)",
+      "url": "https://medlineplus.gov/",
+      "class": "patient-education",
+      "jurisdiction": "international",
+      "verified_on": "2026-09-18",
+      "review_by": "2027-09-18"
+    }
+  ]
+}
