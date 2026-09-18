@@ -1,7 +1,7 @@
 # health-advisory — handover
 
-Written 2026-09-18. State: **plan 1 complete — all 5 tasks committed and
-verified. Plan 2 written, not started.** Everything is pushed.
+Written 2026-09-18. State: **the skill is complete and loads in Codex.** Both
+plans executed, all 10 tasks committed and verified.
 
 ## Where everything lives
 
@@ -49,26 +49,41 @@ Evidence, not assertion:
 The vault now holds `records/household_health.json` — an encrypted, empty
 schema-2 record written as Task 1's proof. No personal data.
 
-## The next action
+## It loads
 
-**Execute plan 2**, at `docs/plans/2026-09-18-health-advisory-workflows.md` —
-1120 lines, 5 tasks, 34 steps. Same shape as plan 1: verbatim code, TDD per task,
-a commit at the end of each.
+Verified two ways, not assumed:
 
-| Task | What | Note |
-|---|---|---|
-| 1 | `routing.json` + the spec's question-class triage | the gap identified after plan 1 |
-| 2 | `urgency.json` + `urgency.md` + a verified emergency source | the gate's content needs a source the ledger does not yet hold |
-| 3 | `source-ladder.md` + `record-fields.md` | cross-checked against `routing.json` |
-| 4 | `due_report.ps1` | writes a file, prints counts only |
-| 5 | `SKILL.md` + `agents/openai.yaml` | **this is the task that makes the skill load** |
+```
+quick_validate.py health-advisory  ->  Skill is valid!
+codex debug prompt-input "test"    ->  - health-advisory: ... (file: r0/health-advisory/SKILL.md)
+```
 
-Task 5 is the milestone. Until it lands, the skill cannot be invoked at all.
+The second is the one that matters: the skill is in Codex's runtime skill list.
 
-Execute inline, as in plan 1 — the subagent path delivered nothing twice. Follow
-the same routine: run each RED step before its implementation, rename nothing,
-and commit per task. Tasks 2 and 4 need escalated shells (network fetches, and
-DPAPI).
+## What is left
+
+In rough priority order.
+
+1. **Use it.** It has not answered a single real health question. Expect one or
+   two of the design decisions to prove unnecessary once it meets your family —
+   that is what the private-use period is for.
+2. **The emergency gate covers children only.** The single verified source is
+   HealthHub's *Emergency Care (Children)*, so adult red flags — chest pain,
+   stroke signs, severe bleeding, overdose, suicidal ideation — have no entry.
+   `references/urgency.md` records this as a known gap rather than papering over
+   it. To close it: verify a Singapore source for adult emergency presentations,
+   add it to the ledger as `"class": "emergency-guidance"`, add one entry per
+   presentation it names.
+3. **No backup yet.** The vault has never been backed up, and a DPAPI-encrypted
+   file will not open if the Windows account or machine changes. A
+   passphrase-based export is the right shape for the backup specifically.
+4. **Publication scaffolding**, deferred from spec section 11: the README
+   never-paste rule, a generated expiry, issue templates that never ask for a
+   condition, and the two diagnostic entry points a bug report needs.
+5. **Specialty lenses** — driven by the record's contents, so they wait until
+   the record has contents.
+6. **Record some actual family data.** The vault holds an empty schema-2 record,
+   so `due_report.ps1` has nothing to review yet.
 
 ## How to run things
 
