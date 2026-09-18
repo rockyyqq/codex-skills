@@ -26,6 +26,13 @@ function Show-Value {
     return "${Label}=$Value"
 }
 
+# @($null).Count is 1, not 0 - so a null section would report as one item.
+function Count-Items {
+    param($Value)
+    if ($null -eq $Value) { return 0 }
+    return @($Value).Count
+}
+
 Write-Output "schema: $($record['schema'])  as_of: $($record['as_of'])"
 
 foreach ($personKey in @($record['people'].Keys)) {
@@ -35,8 +42,7 @@ foreach ($personKey in @($record['people'].Keys)) {
     Write-Output "  age_band: $(if ($person['age_band']) { 'present' } else { 'ABSENT' })"
 
     foreach ($section in @('conditions', 'medications', 'allergies', 'family_history', 'measurements', 'planned_procedures', 'events')) {
-        $items = @($person[$section])
-        Write-Output "  ${section}: $($items.Count)"
+        Write-Output "  ${section}: $(Count-Items $person[$section])"
     }
 
     # Conditions: flags and dates only, never the name.
@@ -45,7 +51,7 @@ foreach ($personKey in @($record['people'].Keys)) {
         if (-not $condition) { continue }
         $flags = @(
             (Show-Value $condition['last_confirmed'] 'last_confirmed')
-            "onset_reports=$(  @($condition['onset_reports']).Count )"
+            "onset_reports=$(Count-Items $condition['onset_reports'])"
             (Show-Value $condition['onset_unknown'] 'onset_unknown')
             (Show-Value $condition['onset_conflict'] 'onset_conflict')
             (Show-Value $condition['severity'] 'severity')
@@ -70,12 +76,16 @@ foreach ($personKey in @($record['people'].Keys)) {
 
     # The gaps, in one line, so a reader cannot mistake a thin record for a clean one.
     $gaps = @()
+    foreach ($section in @('conditions', 'medications', 'allergies')) {
+        if ($null -eq $person[$section]) { $gaps += "$section not recorded" }
+    }
     if ($null -eq $person['treatments_tried']) { $gaps += 'treatments_tried not recorded' }
     foreach ($condition in @($person['conditions'])) {
         if (-not $condition) { continue }
         if ($condition['onset_unknown']) { $gaps += 'onset unknown' }
         if (-not $condition['severity']) { $gaps += 'severity not graded' }
     }
+    $gaps = $gaps | Select-Object -Unique
     Write-Output "  gaps: $(if ($gaps.Count) { $gaps -join '; ' } else { 'none detected' })"
 }
 exit 0

@@ -68,6 +68,22 @@ Check 'it does NOT leak a condition name' {
     Assert-True ($view -notmatch 'a condition') 'the view leaked a condition name'
 }
 
+Check 'a null section counts as zero, not one' {
+    # @($null).Count is 1 in PowerShell. This asserted 1 before and hid the bug.
+    $nullDir = Join-Path $env:TEMP ('hv-view-null-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $nullDir
+    New-Item -ItemType Directory -Path (Join-Path $nullDir 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
+        conditions = @(); medications = @(); allergies = $null
+        treatments_tried = $null; events = @()
+    } } }
+    $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\record_view.ps1') 2>&1 | Out-String
+    Assert-True ($out -match 'allergies:\s*0') "a null section should count 0: $out"
+    Assert-True ($out -match 'allergies not recorded') "a null section should be named as a gap: $out"
+    Remove-Item -LiteralPath $nullDir -Recurse -Force -ErrorAction SilentlyContinue
+}
+
 Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue
 if ($script:Failures -gt 0) { Write-Host "`n$($script:Failures) check(s) failed"; exit 1 }
 Write-Host "`nall record-view checks passed"; exit 0

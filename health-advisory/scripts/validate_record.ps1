@@ -23,11 +23,11 @@ $KNOWN_PERSON     = @('age_band', 'conditions', 'medications', 'allergies', 'fam
                       'measurements', 'treatments_tried', 'treatments_tried_note',
                       'planned_procedures', 'events')
 $REQUIRED_PERSON  = @('conditions', 'medications', 'allergies')
-$KNOWN_CONDITION  = @('name', 'last_confirmed', 'onset_reports', 'onset_unknown', 'onset_conflict', 'severity')
+$KNOWN_CONDITION  = @('name', 'last_confirmed', 'onset_reports', 'onset_unknown', 'onset_conflict', 'severity', 'reported_by')
 $REQUIRED_CONDITION = @('name', 'last_confirmed')
 $KNOWN_ONSET      = @('when', 'precision', 'informant', 'approximate', 'note')
 $REQUIRED_ONSET   = @('when', 'informant', 'approximate')
-$KNOWN_MEDICATION = @('name', 'source', 'dose_text', 'prescriber', 'started', 'stopped', 'stop_reason')
+$KNOWN_MEDICATION = @('name', 'source', 'dose_text', 'prescriber', 'started', 'stopped', 'stop_reason', 'stated_reason')
 $REQUIRED_MEDICATION = @('name', 'source')
 $KNOWN_ALLERGY    = @('substance', 'reaction', 'last_confirmed')
 $REQUIRED_ALLERGY = @('substance', 'reaction', 'last_confirmed')

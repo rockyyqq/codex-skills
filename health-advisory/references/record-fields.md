@@ -81,9 +81,9 @@ review then reports a false all-clear. A typo must be loud, not silent.
 |---|---|---|
 | document | `schema`, `people` | `as_of` |
 | person | `conditions`, `medications`, `allergies` | `age_band`, `family_history`, `measurements`, `treatments_tried`, `treatments_tried_note`, `planned_procedures`, `events` |
-| condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity` |
+| condition | `name`, `last_confirmed` | `onset_reports`, `onset_unknown`, `onset_conflict`, `severity`, `reported_by` |
 | onset report | `when`, `informant`, `approximate` | `precision`, `note` |
-| medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason` |
+| medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason` |
 | allergy | `substance`, `reaction`, `last_confirmed` | — |
 | family history | `relative`, `condition` | `age_at_diagnosis`, `side` |
 | measurement | `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
@@ -92,3 +92,26 @@ review then reports a false all-clear. A typo must be loud, not silent.
 
 `schema` must be a version this skill knows. An unrecognised version is refused
 rather than read, so an old record cannot be silently misread by new code.
+
+`stated_reason` is what the household believes the medicine is for, in their
+words. It is kept separate from any indication because a mismatch between the two
+is a real and checkable error — a medicine prescribed for one thing, understood
+at home as being for another. Recording only the drug name loses the evidence.
+
+## `null` means not recorded; `[]` means none
+
+`conditions`, `medications` and `allergies` are required keys, so they can never
+be absent. That made rule 5 unenforceable — a person whose allergies were never
+asked could only be written as `[]`, which reads as "none known", the exact
+conflation the rule forbids.
+
+The semantics are therefore:
+
+| Value | Means |
+|---|---|
+| `null` | **not recorded** — nobody has asked |
+| `[]` | recorded, and there are none |
+| a list with entries | recorded, with the entries |
+
+The same applies to `treatments_tried`. A gap is a fact about the record, and it
+belongs in the record rather than in someone's memory of what was asked.
