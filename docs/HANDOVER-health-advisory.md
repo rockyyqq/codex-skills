@@ -1,7 +1,7 @@
 # health-advisory — handover
 
 Written 2026-09-18. State: **plan 1 complete — all 5 tasks committed and
-verified. Plan 2 not started.** Nothing has been pushed.
+verified. Plan 2 written, not started.** Everything is pushed.
 
 ## Where everything lives
 
@@ -11,14 +11,14 @@ verified. Plan 2 not started.** Nothing has been pushed.
 | Vault (the data, outside every repo) | `C:\Users\yuanq\Desktop\chatgpt folder\health-vault` |
 | Design spec | `docs/specs/2026-09-18-health-advisory-design.md` |
 | Implementation plan 1 (machinery) | `docs/plans/2026-09-18-health-advisory-machinery.md` |
+| Implementation plan 2 (workflows) | `docs/plans/2026-09-18-health-advisory-workflows.md` |
 | Progress ledger (git-ignored) | `.superpowers/sdd/2026-09-18-health-advisory-machinery/progress.md` |
 
-Branch: `health-advisory-machinery`. `main` is at `3e20e68`; the branch is 7
-commits further on. `health-advisory/` is 13 files, 638 lines.
+Branch: `health-advisory-machinery`, tracking `origin/health-advisory-machinery`.
+`health-advisory/` is 13 files, 638 lines; the branch is ahead of `main`.
 
-**Nothing is pushed.** `origin/main` is at `5bce72d`, so the spec, the plan and
-all five task commits exist only on this machine. The branch is not on the
-remote at all.
+**Everything is pushed**, including `main` (spec, spec amendment, plan 1) and
+this branch. There is also an open pull-request link GitHub offered on push.
 
 ## What is built and verified
 
@@ -51,31 +51,24 @@ schema-2 record written as Task 1's proof. No personal data.
 
 ## The next action
 
-**Write plan 2.** Plan 1's closing section lists what it must cover:
+**Execute plan 2**, at `docs/plans/2026-09-18-health-advisory-workflows.md` —
+1120 lines, 5 tasks, 34 steps. Same shape as plan 1: verbatim code, TDD per task,
+a commit at the end of each.
 
-1. `due_report.ps1` — the periodic review. It reads the vault, so it is
-   PowerShell, and it must write its output to a file while printing only
-   counts, so no report content reaches the session store.
-2. The reference prose: `source-ladder.md`, `urgency.json` + `urgency.md`,
-   `record-fields.md`.
-3. `SKILL.md` and `agents/openai.yaml` — **without these the skill does not load
-   in Codex at all**, so this is the step that makes it usable.
-4. Publication scaffolding from spec section 11 — deferred until after the
-   private-use period.
+| Task | What | Note |
+|---|---|---|
+| 1 | `routing.json` + the spec's question-class triage | the gap identified after plan 1 |
+| 2 | `urgency.json` + `urgency.md` + a verified emergency source | the gate's content needs a source the ledger does not yet hold |
+| 3 | `source-ladder.md` + `record-fields.md` | cross-checked against `routing.json` |
+| 4 | `due_report.ps1` | writes a file, prints counts only |
+| 5 | `SKILL.md` + `agents/openai.yaml` | **this is the task that makes the skill load** |
 
-Follow the same shape as plan 1: a spec-complete plan with verbatim code, then
-TDD per task. Write it to `docs/plans/`.
+Task 5 is the milestone. Until it lands, the skill cannot be invoked at all.
 
-### A known gap to fold into plan 2
-
-The spec defines the order of operations *for a symptom question* but never
-branches between question types. So today "what is HbA1c?" and "my chest hurts"
-would get identical treatment — a full evidence sweep with a 12-month literature
-check. The three-class triage (terminology / effectiveness / symptom, each with
-its own process and effort) was discussed but **never written into the spec**.
-Adding it is a ~20-line spec amendment, plus one rule: **announce the routing**
-("this is a drug-interaction question, so I'm going to the label") so a misroute
-is visible rather than silently producing a confidently wrong shape of answer.
+Execute inline, as in plan 1 — the subagent path delivered nothing twice. Follow
+the same routine: run each RED step before its implementation, rename nothing,
+and commit per task. Tasks 2 and 4 need escalated shells (network fetches, and
+DPAPI).
 
 ## How to run things
 
