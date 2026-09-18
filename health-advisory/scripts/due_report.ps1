@@ -14,6 +14,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'vault.ps1')
+. (Join-Path $PSScriptRoot 'record_gaps.ps1')
 
 Assert-Boundary
 
@@ -42,19 +43,11 @@ if ($record -and $record['people']) {
     foreach ($personKey in $record['people'].Keys) {
         $person = $record['people'][$personKey]
 
-        # Completeness. An unrecorded or unknown field is not a pass: the review
-        # must not report a clean count on something it never assessed.
-        if ($null -eq $person['treatments_tried']) {
-            $unknown += "- $personKey / treatments_tried: not recorded"
-        }
-        foreach ($condition in @($person['conditions'])) {
-            if (-not $condition) { continue }
-            if ($condition['onset_unknown']) {
-                $unknown += "- $personKey / onset: unknown, the reports disagree"
-            }
-            if (-not $condition['severity']) {
-                $unknown += "- $personKey / severity: never graded"
-            }
+        # Completeness, from the one shared definition. An unrecorded or unknown
+        # field is not a pass: the review must not report a clean count on
+        # something it never assessed.
+        foreach ($gap in (Get-RecordGaps -Person $person)) {
+            $unknown += "- $personKey / $gap"
         }
 
         # A booked procedure with an outstanding pre-operative step is a due
@@ -97,15 +90,18 @@ $lines = @(
     "",
     "## Facts",
     "",
-    $(if ($facts.Count) { $facts } else { "- nothing due" }),
+    # -join, not the bare array: a multi-element array stringifies to
+    # 'System.Object[]' when the outer -join touches it. One element unwraps to a
+    # scalar and looks fine, so this only breaks once there are two items.
+    $(if ($facts.Count) { $facts -join "`n" } else { "- nothing due" }),
     "",
     "## Assumption-dependent — questions for a clinician",
     "",
-    $(if ($assumptions.Count) { $assumptions } else { "- nothing to raise" }),
+    $(if ($assumptions.Count) { $assumptions -join "`n" } else { "- nothing to raise" }),
     "",
     "## Cannot judge",
     "",
-    $(if ($cannotJudge.Count) { $cannotJudge } else { "- nothing outstanding" }),
+    $(if ($cannotJudge.Count) { $cannotJudge -join "`n" } else { "- nothing outstanding" }),
     "",
     "## What this is not",
     "",

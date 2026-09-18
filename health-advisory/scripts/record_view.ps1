@@ -15,6 +15,7 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'vault.ps1')
+. (Join-Path $PSScriptRoot 'record_gaps.ps1')
 
 $record = Get-VaultRecord
 if ($null -eq $record) { Write-Output 'no record stored yet'; exit 0 }
@@ -75,17 +76,7 @@ foreach ($personKey in @($record['people'].Keys)) {
     }
 
     # The gaps, in one line, so a reader cannot mistake a thin record for a clean one.
-    $gaps = @()
-    foreach ($section in @('conditions', 'medications', 'allergies')) {
-        if ($null -eq $person[$section]) { $gaps += "$section not recorded" }
-    }
-    if ($null -eq $person['treatments_tried']) { $gaps += 'treatments_tried not recorded' }
-    foreach ($condition in @($person['conditions'])) {
-        if (-not $condition) { continue }
-        if ($condition['onset_unknown']) { $gaps += 'onset unknown' }
-        if (-not $condition['severity']) { $gaps += 'severity not graded' }
-    }
-    $gaps = $gaps | Select-Object -Unique
+    $gaps = Get-RecordGaps -Person $person
     Write-Output "  gaps: $(if ($gaps.Count) { $gaps -join '; ' } else { 'none detected' })"
 }
 exit 0

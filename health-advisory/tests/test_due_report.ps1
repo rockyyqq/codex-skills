@@ -80,6 +80,30 @@ Check 'an unrecorded field makes the review CANNOT JUDGE, not DUE' {
     Remove-Item -LiteralPath $incomplete -Recurse -Force -ErrorAction SilentlyContinue
 }
 
+Check 'several items render as a list, not System.Object[]' {
+    # A single element unwraps to a scalar and hides this bug.
+    $multi = Join-Path $env:TEMP ('hv-multi-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $multi
+    New-Item -ItemType Directory -Path (Join-Path $multi 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
+        conditions = @(); medications = @(); allergies = @()
+        treatments_tried = @()
+        events = @(
+            @{ id='E1'; kind='screening'; code='alpha'; last_done='2020-01-01'; interval_months=12; basis='fact' }
+            @{ id='E2'; kind='screening'; code='beta';  last_done='2020-01-01'; interval_months=12; basis='fact' }
+        )
+    } } }
+    $dir = Join-Path $env:HEALTH_VAULT_ROOT 'reports'
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') > $null 2>&1
+    $file = @(Get-ChildItem $dir -Filter '*-review.md')[0]
+    $body = Get-Content -LiteralPath $file.FullName -Raw
+    Assert-True ($body -notmatch 'System\.Object') "the report rendered an array object: $body"
+    Assert-True ($body -match 'alpha') 'the first item is missing'
+    Assert-True ($body -match 'beta')  'the second item is missing'
+    Remove-Item -LiteralPath $multi -Recurse -Force -ErrorAction SilentlyContinue
+}
+
 Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue
 if ($script:Failures -gt 0) { Write-Host "`n$($script:Failures) check(s) failed"; exit 1 }
 Write-Host "`nall due-report checks passed"; exit 0

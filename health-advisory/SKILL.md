@@ -76,6 +76,9 @@ Read `references/record-fields.md`. The vault is
   never clinical values. **Analyse from this, not from memory of having written
   the record.** Recalling what you wrote is not reading the artifact back, and a
   dropped or renamed key would go unnoticed.
+- `scripts/record_gaps.ps1` holds the single definition of what counts as a gap.
+  Both the view and the review use it, because two implementations of one rule
+  drift — and they did, disagreeing about whether a missing allergy list was a gap.
 - **Scripts print counts and IDs, never record content.** Everything read into a
   conversation is written to the local session store in plaintext and persists.
   This is the load-bearing privacy rule; encryption does not substitute for it.
