@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investment Review"
+  short_description: "Review one investment: case, price, valuation, ownership"
+  default_prompt: "Review this investment: what is it, what does the case claim, is the claim checkable, what does the price history show, and how does the valuation compare with the alternatives?"

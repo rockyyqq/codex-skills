@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reproduce a Chart From an Image"
+  short_description: "Rebuild or read numbers out of a chart picture"
+  default_prompt: "Use $reproducing-charts-from-images to recreate this chart and recover its numbers."
