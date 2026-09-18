@@ -85,6 +85,38 @@ In rough priority order.
 6. **Record some actual family data.** The vault holds an empty schema-2 record,
    so `due_report.ps1` has nothing to review yet.
 
+## First real use, and what it broke
+
+The skill was used on a real case on 2026-09-18 — a child's booked day surgery —
+and it found four defects that no amount of design would have surfaced.
+All four are fixed and committed (`d5f8d16`, `d1032e3`).
+
+1. **The schema could not hold the facts the decision turned on.** There was no
+   field for what conservative treatment had been tried, no way to record which
+   informant gave an onset date, and `events` is shaped for intervals so a
+   one-off planned procedure did not fit. Schema is now v3: `onset_reports`
+   (a list, so conflicting reports are preserved rather than averaged),
+   `treatments_tried` (where `null` means not recorded, not "none tried"), and
+   `planned_procedures`. New rule 6: *a report is not a measurement.*
+2. **`due_report.ps1` reported `OK` while a pre-operative step was outstanding.**
+   It only read `events`, so a booked procedure was invisible. That is
+   exactly the false-reassurance failure the script exists to prevent. It now
+   surfaces `pre_op_outstanding`.
+3. **`validate_report.py` failed the very review it was meant to guard** —
+   demanding an Evidence section of a household review. A gate that fires
+   falsely teaches the operator to bypass it. It now detects the report kind,
+   with `--kind` to override, and fails an unrecognised document closed.
+4. **The status check was case-sensitive**, so `**Status: DUE**` did not match
+   `status:`. Section matching is now case-insensitive throughout.
+
+Two less far-reaching lessons:
+
+- **A search needs checking as much as a result.** A Europe PMC query was
+  malformed and returned 8,607 irrelevant hits sorted by citations. The count
+  looked like a result; it was noise.
+- **A single observation delayed the answer usefully.** "Noticed two months
+  ago" is a lower bound, not an onset — a distinction the record now encodes.
+
 ## How to run things
 
 ```powershell
