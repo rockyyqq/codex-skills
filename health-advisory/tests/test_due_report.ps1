@@ -1,0 +1,63 @@
+#Requires -Version 7
+$ErrorActionPreference = 'Stop'
+
+$env:HEALTH_VAULT_ROOT = Join-Path $env:TEMP ('hv-due-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path (Join-Path $env:HEALTH_VAULT_ROOT 'records') -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $env:HEALTH_VAULT_ROOT 'reports') -Force | Out-Null
+
+. (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+
+$script:Failures = 0
+function Check {
+    param([string]$Name, [scriptblock]$Body)
+    try { & $Body; Write-Host "PASS  $Name" }
+    catch { Write-Host "FAIL  $Name :: $($_.Exception.Message)"; $script:Failures++ }
+}
+function Assert-True {
+    param([bool]$Condition, [string]$Message)
+    if (-not $Condition) { throw $Message }
+}
+
+# A record with one overdue item, keyed by a role label we can search for.
+$roleLabel = 'zzrole' + [guid]::NewGuid().ToString('N').Substring(0, 6)
+Set-VaultRecord -Record @{
+    schema = 2
+    people = @{ $roleLabel = @{
+        conditions  = @()
+        medications = @()
+        allergies   = @()
+        events      = @(@{ id = 'E1'; kind = 'screening'; code = 'demo-test'
+                           last_done = '2020-01-01'; interval_months = 12; basis = 'fact' })
+    } }
+}
+
+$dueScript = Join-Path $PSScriptRoot '..\scripts\due_report.ps1'
+$stdout = & pwsh -NoProfile -File $dueScript 2>&1 | Out-String
+$code = $LASTEXITCODE
+
+Check 'it exits 0' {
+    Assert-True ($code -eq 0) "exit was $code"
+}
+
+Check 'stdout carries no role label' {
+    Assert-True ($stdout -notmatch $roleLabel) 'stdout leaked a role label from the record'
+}
+
+Check 'it reports a DUE status' {
+    Assert-True ($stdout -match 'status:\s*DUE') "stdout did not report 'status: DUE': $stdout"
+}
+
+Check 'it wrote a report file' {
+    $files = @(Get-ChildItem (Join-Path $env:HEALTH_VAULT_ROOT 'reports') -Filter '*-review.md')
+    Assert-True ($files.Count -ge 1) 'no review file was written'
+}
+
+Check 'the written report names the overdue item' {
+    $files = @(Get-ChildItem (Join-Path $env:HEALTH_VAULT_ROOT 'reports') -Filter '*-review.md')
+    $body = Get-Content -LiteralPath $files[0].FullName -Raw
+    Assert-True ($body -match 'demo-test') 'the report does not name the overdue item'
+}
+
+Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue
+if ($script:Failures -gt 0) { Write-Host "`n$($script:Failures) check(s) failed"; exit 1 }
+Write-Host "`nall due-report checks passed"; exit 0
