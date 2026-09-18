@@ -25,7 +25,7 @@ Produce research work product where a reader can retrieve every source and see w
 
 ## Workflow
 
-1. **Frame the question so it can be searched.** A question that cannot be expressed as population, intervention, comparator and outcome cannot be searched reproducibly. Read `references/search-and-screening.md`. Where the task is designing a study rather than finding evidence - purpose statements, research questions, sampling, mixed-methods decisions - read `references/design-and-questions.md` instead.
+1. **Frame the question so it can be searched.** A question that cannot be expressed as population, intervention, comparator and outcome cannot be searched reproducibly. Read `references/search-and-screening.md`. Where the task is designing a study rather than finding evidence - purpose statements, research questions, sampling, mixed-methods decisions - read `references/design-and-questions.md` instead, and for the sample size read `references/sample-size-and-power.md`.
 2. **Search, and log as you go.** Record database, interface, date, the exact query string and the hit count. A search you cannot rerun is not a method.
 3. **Screen, and record the reasons.** Inclusion and exclusion with a reason per record; keep the flow counts.
 4. **Extract into a table before writing prose.** One row per study. Extract what the study measured, not the conclusion its authors drew.
@@ -55,6 +55,7 @@ Read only what the task needs.
 
 - `references/search-and-screening.md` - question framing, free bibliographic APIs, query construction, why one database is never enough, the search log, snowballing and the stopping rule, screening and flow counts.
 - `references/design-and-questions.md` - matching the question to the approach, quantitative and qualitative question forms, purpose statement scripts, the deficiencies model for introductions, theory placement, sampling logic, and the four decisions behind a mixed-methods design.
+- `references/sample-size-and-power.md` - the four quantities that lock together, choosing and converting effect sizes, why the sensitivity range is the deliverable, inflation for attrition, clustering and multiplicity, simulation when no formula exists, and the post-hoc power trap.
 - `references/evidence-appraisal.md` - what each design can support, risk-of-bias instruments, detecting overlapping samples, effect measures, heterogeneity and certainty grading.
 - `references/synthesis-and-meta-analysis.md` - whether to pool at all, effect measures, unit-of-analysis errors, fixed versus random effects, heterogeneity and prediction intervals, missing data, funnel plots, Summary of findings tables, GRADE, and interpreting NNT and SMD. Distilled from Cochrane Handbook v5.0.1, with the version changes flagged.
 - `references/reporting-standards.md` - the guideline that applies to each design, describing an intervention so it can be replicated, and the numbers reviewers reconcile first.
@@ -65,7 +66,7 @@ Read only what the task needs.
 - `references/economic-evaluation.md` - perspective, time horizon, discounting, price year and currency, transferability between health systems, model structure, and uncertainty reporting.
 - `references/citation-verification.md` - the pre-delivery gate, quote and number traceability, retraction and erratum checks, preprints, and what to do when a check fails.
 - `references/reference-formatting.md` - the two-place rule, in-text citation forms, reference-list construction, templates by source type, table, figure, heading and bias-free-language rules, and the APA 6 to 7 differences. Read the journal's instructions to authors first.
-- `references/own-analysis.md` - treating your own analysis as a retrievable source: the provenance chain, and the SAS failure modes that produce a wrong answer without an error message.
+- `references/own-analysis.md` - treating your own analysis as a retrievable source: the provenance chain and the frozen run record, the specifications that lost, and the SAS failure modes that produce a wrong answer without an error message.
 
 ## Handoffs
 
@@ -79,5 +80,7 @@ This skill covers evidence: getting it, judging it, and citing it. Other work ha
 ## Your own data
 
 Your analyses are sources too. A result from SPSS, Stata, SAS or Python needs the same treatment as a published one: sample size, exclusions, missingness, the software and version, and the date the output was produced. Keep the output file, not a transcription of it. Read `references/own-analysis.md` for the provenance chain and for the SAS errors that produce a wrong answer with no error message.
+
+Freeze that record when the run finishes, not later: the input snapshot, the program, the log, the output file and the version go into one place named for that run, and the specifications that lost stay filed with the one you reported. A chain assembled months afterwards is a reconstruction.
 
 Report the analysis as it was run. Re-running to get a friendlier number, or selecting the specification that reached significance, is the same failure as citing a study that does not exist - and it is harder to detect later.

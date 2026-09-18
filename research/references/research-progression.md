@@ -34,7 +34,9 @@ the question only in hindsight.
 The error that sinks applications: sizing the definitive trial from the effect
 observed in the pilot. Pilot effects are imprecise and typically inflated, so a
 trial sized that way is underpowered by construction. Size the definitive trial
-from the smallest effect that would change practice.
+from the smallest effect that would change practice. `sample-size-and-power.md`
+covers how that number is arrived at, what has to be inflated for attrition and
+clustering, and why the sensitivity range is reported rather than a single n.
 
 Report the pilot against the CONSORT extension for pilot and feasibility trials,
 and register it before recruiting. Both are checkable, and their absence is

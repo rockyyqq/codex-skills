@@ -143,7 +143,9 @@ For an experiment, the sample size comes from a power analysis: alpha (conventio
 .05), power (convention .80), and the effect size expressed in standard deviation
 units (.50 in Creswell's worked example). Name all three inputs and their source.
 A power calculation built on an effect size from a pilot is a calculation built
-on an inflated number - see `research-progression.md`.
+on an inflated number - see `research-progression.md`. For what each input has to
+be defensible against, and how the answer is reported, read
+`sample-size-and-power.md`.
 
 ## Mixed-methods design: four decisions before the label
 

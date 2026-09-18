@@ -28,6 +28,14 @@ For every result that reaches a draft, be able to produce:
 Keep the output file, not a transcription of it. Numbers retyped into a draft
 are the ones that drift, and a retyped number has no chain back to the run.
 
+**Keep the six as one record.** They are not six filing habits but a single
+bundle, and it only has value as a bundle. At the moment the run finishes, put
+the input snapshot, the program, the log, the output file, the version and the
+date together in one place named for that run. Freezing it costs a minute while
+the session is still open; it cannot be done afterwards. A chain assembled
+months later out of whatever happens to still be on the machine is a
+reconstruction, and it will be read as one.
+
 ## Rules that apply whatever the software
 
 - **Report the analysis as it was run.** Re-running to get a friendlier number,
@@ -35,6 +43,12 @@ are the ones that drift, and a retyped number has no chain back to the run.
   as citing a study that does not exist, and it is harder to detect afterwards.
   Where several specifications were tried, say so and report the one named in
   advance as primary.
+- **Keep the specifications that lost.** Disclosing that several were tried is
+  not the same as retaining them. The pre-specified primary is reported; the
+  rest stay filed with it in the same run record. Reporting bias in your own
+  analysis is the same failure as a file drawer in someone else's review, and it
+  is harder to detect, because no reader can see what was never reported. What
+  was tried and rejected is also a result about the data.
 - **Analyses not named in advance are exploratory.** Label them, in the text and
   in any abstract. A subgroup that only appears in the results section is a
   hypothesis.
