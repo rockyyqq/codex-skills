@@ -96,6 +96,17 @@ This produces a clean split rather than a preference:
 No Python script is ever handed decrypted record content. If one needs a
 derived value, PowerShell computes it and passes the value, not the record.
 
+### The vault interface
+
+Two operations, `read` and `write`, behind one small file with a documented
+contract. One backend ships: DPAPI on Windows. Documenting the contract means a
+macOS Keychain or Linux Secret Service backend is a contribution rather than a
+refactor.
+
+The Windows constraint is one file, not the project. The source ladder, the
+ledger checks, the query builder and report validation are platform-independent,
+and the README says so rather than leaving it to be discovered.
+
 ## 5. The record
 
 Fields per person, keyed by role label rather than name:
@@ -194,6 +205,10 @@ The recency idea appears at three levels, enforced once:
 | Per review | has any guideline been superseded since last year |
 | Per source ledger | `check_sources.py` fails on any source past its class threshold |
 
+The public expiry claim is generated from the ledger's earliest `review_by`,
+never written by hand. A hand-written "reviewed 2026" line rots silently; a
+generated one cannot.
+
 ### Output shape
 
 ```
@@ -235,6 +250,13 @@ Order of operations for a symptom question:
 7. Referral package when a specialty lens applies: which specialty, what to
    bring, what only they can answer
 
+### Structural limits
+
+The rules that matter are made unrepresentable rather than prohibited. The
+output schema has no dose field, so no code path can emit one. The urgency gate
+runs before any retrieval and cannot be skipped by any argument. A prohibition
+can be argued with; a missing field cannot.
+
 The clinician outranks the skill. A treating clinician's advice is recorded as
 fact about the plan; disagreement with a guideline becomes a question, never a
 correction.
@@ -266,13 +288,71 @@ calendar month. A clean review says "these checks are up to date" and never
 
 ## 10. Failure handling
 
+**Fail closed everywhere.** Each of these stops the tool rather than degrading
+it, because the dangerous failure is a tool that keeps working after it has
+stopped being trustworthy:
+
 - Stale red-flag criteria fail the whole skill, not one claim
-- A source past its class threshold fails the report
+- A source past its `review_by` fails the report
+- A missing or unreadable `boundary-and-privacy.md` fails the run
+- An absent or unrecognised vault backend fails the run
 - A missing recency block is a failed output, not a stylistic omission
 - An identifier appearing in a report is a validation failure
 - An empty search is reported as empty, never backfilled with weaker material
 
-## 11. Verification plan
+This is the fourth instance of a pattern already in the repo: `check_params.py`
+exits non-zero, `check_mandate.py` has `CANNOT JUDGE`, `validate_deliverable.py`
+prints `FAIL`.
+
+## 11. Publication
+
+The skill is intended to be publishable, and the repo is already publishable by
+construction: the household example states in its own first line that every
+figure is made up, and the parameter file holds published government figures
+with per-entry provenance. The obstacles are therefore policy and maintenance,
+not disclosure.
+
+**Four conditions before a public release.**
+
+1. **Institutional clearance.** Check the outside-work policy for
+   health-related public projects. That is a question for the employer, not a
+   judgment the project can make for itself.
+2. **Separation stated.** "Personal project, not affiliated with or endorsed by
+   my employer." The attribution stance — real name or neutral handle — is
+   chosen deliberately rather than drifted into.
+3. **Non-goals repeated in the README**, including: not a research instrument,
+   not validated, no clinical claim, not citable as evidence that anything
+   works.
+4. **A stated review cadence, or a visible expiry.** The README carries the
+   generated expiry. An unmaintained health tool that looks maintained is worse
+   than none.
+
+**Bug reports must never require disclosing health information.**
+
+- Two diagnostic entry points cover a bug report between them:
+  `vault.ps1 status` reports the backend, its availability and the last write,
+  without content; `check_sources.py --diagnostic` reports versions, source IDs,
+  timestamps and rule failures. Attaching both never requires pasting anything
+  personal.
+- Issue templates ask for the version, the source ID, the output and the
+  expectation. They never ask for a condition or a history.
+- A stated route for reporting a data-handling problem privately, and a
+  standing commitment to delete an issue containing personal health information
+  on request.
+- The never-paste rule appears on the README's first screen, not in a policy
+  file.
+
+**Validation before publication.**
+
+- Build and use it privately for a set period: three months, or twenty real
+  questions.
+- Record field notes — what it was used for, what broke, what changed.
+- At that review, every rule must be justified by an incident. Rules that never
+  fired are cut.
+- The first public release is therefore v2: the design plus the evidence it
+  survived contact.
+
+## 12. Verification plan
 
 Established in this repo's style: prove each check can fail.
 
@@ -283,7 +363,7 @@ Established in this repo's style: prove each check can fail.
 - Round-trip the vault through DPAPI and confirm the plaintext is recoverable
 - Restore a backup on this machine and record the date
 
-## 12. Decisions still open
+## 13. Decisions still open
 
 1. **Vault path.** An earlier suggestion was declined. Needs a location outside
    OneDrive, outside the skills repo and outside the session store.
@@ -292,7 +372,7 @@ Established in this repo's style: prove each check can fail.
 3. **Which specialty lenses to build.** Driven by the record's contents rather
    than a textbook list of specialties.
 
-## 13. Build sequence
+## 14. Build sequence
 
 1. Vault location, DPAPI round-trip, ignore rules
 2. `boundary-and-privacy.md` — written before anything depends on it
