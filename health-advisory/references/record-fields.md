@@ -86,7 +86,7 @@ review then reports a false all-clear. A typo must be loud, not silent.
 | medication | `name`, `source` | `dose_text`, `prescriber`, `started`, `stopped`, `stop_reason`, `stated_reason` |
 | allergy | `substance`, `reaction`, `last_confirmed` | — |
 | family history | `relative`, `condition` | `age_at_diagnosis`, `side` |
-| measurement | `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
+| measurement | `name`, `value`, `unit`, `taken_on` | `reference_range`, `conditions_of_measurement` |
 | planned procedure | `code`, `status`, `planned_for`, `pre_op_outstanding` | `name`, `tosp_table`, `setting`, `source` |
 | event | `id`, `kind`, `code`, `last_done`, `interval_months`, `basis`, `source_id` | — |
 
@@ -115,3 +115,23 @@ The semantics are therefore:
 
 The same applies to `treatments_tried`. A gap is a fact about the record, and it
 belongs in the record rather than in someone's memory of what was asked.
+
+## Measurements need a name, and blood pressure is two numbers
+
+A measurement without a name is unreadable: `110` with unit `mg/dL` does not say
+what was measured, and `97` with unit `mmHg` does not say which pressure. So
+`name` is required — `"weight"`, `"height"`, `"blood pressure"`, `"pulse rate"`.
+
+Blood pressure is inherently a pair, so `value` may be a **string** where the
+reading is a pair: `"97/60"` with unit `mmHg`. Numeric trending is not supported
+and is not wanted; a chart of self-reported readings is the artefact this skill
+refuses to produce.
+
+`reference_range` must come from a source. Where no verified range has been
+fetched, leave it unrecorded rather than filling in a remembered one — an
+invented "normal range" is exactly the kind of plausible-looking number rule 4
+exists to stop.
+
+`conditions_of_measurement` matters more than it looks for a home reading: which
+arm, seated or standing, how long after activity or a meal. A blood pressure
+without its conditions is close to uninterpretable.

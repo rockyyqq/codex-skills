@@ -26,6 +26,8 @@ Set-VaultRecord -Record @{
         conditions  = @()
         medications = @()
         allergies   = @()
+        family_history = @()
+        measurements   = @()
         # Recorded as "none tried" - not $null, which means "not recorded" and
         # would (correctly) make the whole review CANNOT JUDGE.
         treatments_tried = @()
@@ -70,6 +72,7 @@ Check 'an unrecorded field makes the review CANNOT JUDGE, not DUE' {
         schema = 3
         people = @{ 'child-a' = @{
             conditions = @(); medications = @(); allergies = @()
+            family_history = @(); measurements = @()
             treatments_tried = $null
             events = @()
         } }
@@ -88,6 +91,7 @@ Check 'several items render as a list, not System.Object[]' {
     . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
     Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
         conditions = @(); medications = @(); allergies = @()
+        family_history = @(); measurements = @()
         treatments_tried = @()
         events = @(
             @{ id='E1'; kind='screening'; code='alpha'; last_done='2020-01-01'; interval_months=12; basis='fact' }
