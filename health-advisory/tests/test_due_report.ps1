@@ -18,23 +18,35 @@ function Assert-True {
     if (-not $Condition) { throw $Message }
 }
 
+# A person with every section present. Each fixture overrides only what it tests,
+# so adding a section to the schema updates one place instead of turning every
+# fixture into an incomplete record and failing the suite for the wrong reason.
+function Complete-Person {
+    param([hashtable]$Overrides = @{})
+    $person = @{
+        relationship     = 'self'
+        conditions       = @()
+        medications      = @()
+        allergies        = @()
+        family_history   = @()
+        measurements     = @()
+        lifestyle        = @()
+        treatments_tried = @()
+        planned_procedures = @()
+        events           = @()
+    }
+    foreach ($key in $Overrides.Keys) { $person[$key] = $Overrides[$key] }
+    return $person
+}
+
 # A record with one overdue item, keyed by a role label we can search for.
 $roleLabel = 'zzrole' + [guid]::NewGuid().ToString('N').Substring(0, 6)
 Set-VaultRecord -Record @{
-    schema = 2
-    people = @{ $roleLabel = @{
-        conditions  = @()
-        medications = @()
-        allergies   = @()
-        family_history = @()
-        measurements   = @()
-        lifestyle      = @()
-        # Recorded as "none tried" - not $null, which means "not recorded" and
-        # would (correctly) make the whole review CANNOT JUDGE.
-        treatments_tried = @()
-        events      = @(@{ id = 'E1'; kind = 'screening'; code = 'demo-test'
-                           last_done = '2020-01-01'; interval_months = 12; basis = 'fact' })
-    } }
+    schema = 3
+    people = @{ $roleLabel = (Complete-Person @{
+        events = @(@{ id = 'E1'; kind = 'screening'; code = 'demo-test'
+                      last_done = '2020-01-01'; interval_months = 12; basis = 'fact' })
+    }) }
 }
 
 $dueScript = Join-Path $PSScriptRoot '..\scripts\due_report.ps1'
@@ -71,12 +83,7 @@ Check 'an unrecorded field makes the review CANNOT JUDGE, not DUE' {
     . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
     Set-VaultRecord -Record @{
         schema = 3
-        people = @{ 'child-a' = @{
-            conditions = @(); medications = @(); allergies = @()
-            family_history = @(); measurements = @(); lifestyle = @()
-            treatments_tried = $null
-            events = @()
-        } }
+        people = @{ 'child-a' = (Complete-Person @{ treatments_tried = $null }) }
     }
     $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') 2>&1 | Out-String
     Assert-True ($out -match 'status:\s*CANNOT JUDGE') "expected CANNOT JUDGE, got: $out"
@@ -90,15 +97,12 @@ Check 'several items render as a list, not System.Object[]' {
     $env:HEALTH_VAULT_ROOT = $multi
     New-Item -ItemType Directory -Path (Join-Path $multi 'records') -Force | Out-Null
     . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
-    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
-        conditions = @(); medications = @(); allergies = @()
-        family_history = @(); measurements = @(); lifestyle = @()
-        treatments_tried = @()
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = (Complete-Person @{
         events = @(
             @{ id='E1'; kind='screening'; code='alpha'; last_done='2020-01-01'; interval_months=12; basis='fact' }
             @{ id='E2'; kind='screening'; code='beta';  last_done='2020-01-01'; interval_months=12; basis='fact' }
         )
-    } } }
+    }) } }
     $dir = Join-Path $env:HEALTH_VAULT_ROOT 'reports'
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') > $null 2>&1
     $file = @(Get-ChildItem $dir -Filter '*-review.md')[0]
@@ -115,13 +119,7 @@ Check 'a null events section does not crash the review' {
     $env:HEALTH_VAULT_ROOT = $nullEvents
     New-Item -ItemType Directory -Path (Join-Path $nullEvents 'records') -Force | Out-Null
     . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
-    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-b' = @{
-        conditions = @(); medications = @(); allergies = @()
-        family_history = @(); measurements = @(); lifestyle = @()
-        treatments_tried = @()
-        planned_procedures = @()
-        events = $null
-    } } }
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-b' = (Complete-Person @{ events = $null }) } }
     $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\due_report.ps1') 2>&1 | Out-String
     Assert-True ($out -notmatch 'Cannot index into a null array') "the review crashed: $out"
     Assert-True ($out -match 'status:') "the review produced no status: $out"
