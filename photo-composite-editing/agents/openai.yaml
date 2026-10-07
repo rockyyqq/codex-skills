@@ -1,0 +1,4 @@
+interface:
+  display_name: "Photo Composite Editing"
+  short_description: "Photo edits that leave everything outside the target region untouched"
+  default_prompt: "Use $photo-composite-editing to make this change to my photo without disturbing the rest of the frame."

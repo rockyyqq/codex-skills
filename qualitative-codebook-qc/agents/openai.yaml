@@ -1,0 +1,3 @@
+interface:
+  display_name: "Qualitative Codebook QC"
+  short_description: "Auditable multi-level qualitative coding in a workbook"

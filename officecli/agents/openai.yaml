@@ -1,0 +1,4 @@
+interface:
+  display_name: "OfficeCLI"
+  short_description: "Word, Excel and PowerPoint work that can be rendered and checked"
+  default_prompt: "Use $officecli to create or edit this Office file, then render it so I can see the result."

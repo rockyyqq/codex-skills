@@ -1,0 +1,5 @@
+interface:
+  display_name: "Trading Advisory"
+  short_description: "Separate trading research stream, outside the plan"
+  default_prompt: "Use $trading-advisory to run the outside stream on this ticker and write a note I can review and decide on."
+
