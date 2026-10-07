@@ -58,6 +58,12 @@ absence of evidence is not evidence of absence.
   happened, and the questions to ask. **No differential:** a list of
   possibilities anchors the consultation and wastes the appointment.
 
+A **consultation pack** is the bring-to-clinician output written down. When the
+household asks what to bring to an appointment, or the record raises a question
+no household member can answer, read `references/specialty-lenses.md` and write
+the pack to `reports/<date>-consultation-pack.md`. A lens names which specialty
+owns a question; it is not a referral, and the questions leave as questions.
+
 The clinician outranks this skill. Disagreement with a guideline becomes a
 question, never a correction.
 
@@ -72,10 +78,16 @@ Read `references/record-fields.md`. The vault is
   and **fails closed on any unknown key**. A misspelled key makes a real item
   invisible — and then the review reports a false all-clear. Run it after every
   write to the vault.
-- `scripts/record_view.ps1` prints a derived view: structure, flags and gaps,
-  never clinical values. **Analyse from this, not from memory of having written
-  the record.** Recalling what you wrote is not reading the artifact back, and a
-  dropped or renamed key would go unnoticed.
+- `scripts/record_view.ps1` prints a derived view: structure, counts, flags and
+  gaps. Fields that can hold prose, such as a severity grade or a pre-operative
+  rule, report only whether they are **present**; a boolean reports true or
+  false. It printed those sentences verbatim until 2026-09-18 while its own
+  header claimed otherwise, which is the exact defect it exists to prevent.
+  **Analyse from this, not from memory of having written the record.** Recalling
+  what you wrote is not reading the artifact back, and a dropped or renamed key
+  would go unnoticed. When a task genuinely needs the text, such as writing a
+  family analysis, read the record deliberately for it and put the result in a
+  report file rather than in the conversation.
 - `scripts/record_gaps.ps1` holds the single definition of what counts as a gap.
   Both the view and the review use it, because two implementations of one rule
   drift — and they did, disagreeing about whether a missing allergy list was a gap.
@@ -102,8 +114,44 @@ Read `references/record-fields.md`. The vault is
   It reports **OK**, **DUE** or **CANNOT JUDGE** — the third is not a pass.
 - Facts and assumption-dependent items never merge. A due screening is a fact; a
   family-history criterion met is a question for a clinician.
+- The review computes a **next review date** from the earliest sourced interval,
+  rather than pinning it to a calendar month, and the report states a
+  **retention**. `validate_report.py` requires that retention for every kind.
+- The review has exactly one cross-check: a **word match** between a recorded
+  allergy and a recorded medication. It is deliberately literal, so a match is
+  reported as a fact and nothing more. It is not an interaction check (that is a
+  label question), and finding no match clears nothing. A placeholder such as
+  "no known drug allergies" reduces to no substance and is never matched.
 - A clean review says "these checks are up to date" and **never** "you are
   healthy".
+
+## The backup
+
+DPAPI is bound to this Windows account, so a DPAPI-encrypted file will not open
+after a profile rebuild or on another machine — which is exactly the situation a
+backup exists for. `scripts/vault_backup.ps1` is the portable half: it decrypts
+the record in memory and re-encrypts it under a passphrase
+(PBKDF2-SHA256 → AES-256-GCM), so the container restores anywhere.
+
+- `export` writes the container and then **decrypts it again and compares** before
+  reporting success, so a backup is never declared good without a restore.
+- `export` writes two companion files first and stops if either cannot be
+  written: the optional passphrase copy, and `RESTORE-HOWTO.txt` beside the
+  container, which says what the file is, that restoring needs PowerShell 7, and
+  what to type. `-passnote "<text>"` records where the passphrase is kept.
+- `verify` reports counts and writes nothing. `restore` refuses to overwrite a
+  record that is already there unless `-Force` is given.
+- The passphrase is typed at a prompt. It is never passed on the command line,
+  never committed, and never written into a report or a chat. `-passfile <path>`
+  optionally writes a local copy for the household, readable by the current user
+  only — and that copy must not be the **only** copy, because it dies with the
+  machine the backup is meant to survive. **If the passphrase is lost the backup
+  is unrecoverable**; that is the trade for not needing this Windows account.
+- The destination may be synced, since the design's working assumption is
+  encrypt-then-sync. The vault itself is never synced: checked 2026-09-18, the
+  vault sits on a Desktop that is not redirected into OneDrive.
+- OneDrive's own version history is the rotation. Because that is a Microsoft-side
+  feature, copy one container somewhere independent occasionally.
 
 ## Before any search leaves the machine
 
@@ -113,9 +161,11 @@ detail or a place is rejected, with what to rewrite. Search the clinical term.
 
 ## Before delivering a report
 
-Run `scripts/validate_report.py`. It rejects identifiers and unsourced claims.
-Run `scripts/check_sources.py` too: it fails the whole report on any source past
-its review date.
+Run `scripts/validate_report.py`. It rejects identifiers and unsourced claims and
+requires the report's kind, whether evidence, review or pack, to carry its own
+blocks **and a retention statement**. A new report type adds a kind; it never
+relaxes an existing kind's list. Run `scripts/check_sources.py` too: it fails the
+whole report on any source past its review date.
 
 ## References
 
@@ -128,6 +178,7 @@ Read only what the task needs.
 - `references/record-fields.md` — the record schema and its five rules
 - `references/writing-the-record.md` — the four traps that make a write fail quietly
 - `references/analysis-template.md` — the nine-section structure for a family analysis, and what it excludes
+- `references/specialty-lenses.md` — which specialty owns a question, what to bring, and what only they can answer
 - `references/sources.json` — verified sources with review dates, local and international
 
 ## What this skill is not

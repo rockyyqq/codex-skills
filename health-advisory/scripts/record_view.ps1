@@ -5,10 +5,16 @@
   It exists because analysing a record from memory of having written it is not
   analysis - it is recollection. This is the artifact you read back instead.
 
-  What it emits: section counts, key presence, dates, conflict flags, codes.
+  What it emits: section counts, key presence, dates, conflict flags, codes,
+  and - for the fields that hold prose - whether they are present at all.
   What it does NOT emit: condition names, allergy substances, measurement
-  values, family detail. Those never reach stdout, because stdout is persisted
-  by the session store.
+  values, family detail, a severity grade, or a pre-operative rule. Those never
+  reach stdout, because stdout is persisted by the session store.
+
+  That last pair was a real defect: `severity` and `pre_op_outstanding` hold
+  sentences, and this script printed them verbatim while its own header claimed
+  otherwise. Presence is the part a decision turns on; the text is read
+  deliberately, from the record, when a task actually needs it.
 #>
 [CmdletBinding()]
 param()
@@ -25,6 +31,16 @@ function Show-Value {
     if ($null -eq $Value) { return "${Label}=ABSENT" }
     if ($Value -is [bool]) { return "${Label}=$(if ($Value) {'true'} else {'false'})" }
     return "${Label}=$Value"
+}
+
+# A flag, never the text. A boolean reports itself; a string reports only that it
+# is there. Use this for any field that can hold prose.
+function Show-Flag {
+    param($Value, [string]$Label)
+    if ($null -eq $Value) { return "${Label}=ABSENT" }
+    if ($Value -is [bool]) { return "${Label}=$(if ($Value) {'true'} else {'false'})" }
+    if ([string]$Value -match '^\s*$') { return "${Label}=ABSENT" }
+    return "${Label}=present"
 }
 
 # @($null).Count is 1, not 0 - so a null section would report as one item.
@@ -57,7 +73,7 @@ foreach ($personKey in @($record['people'].Keys)) {
             "onset_reports=$(Count-Items $condition['onset_reports'])"
             (Show-Value $condition['onset_unknown'] 'onset_unknown')
             (Show-Value $condition['onset_conflict'] 'onset_conflict')
-            (Show-Value $condition['severity'] 'severity')
+            (Show-Flag $condition['severity'] 'severity')
         )
         Write-Output "    conditions[$ci]: $($flags -join ' ')"
         $ci++
@@ -71,7 +87,7 @@ foreach ($personKey in @($record['people'].Keys)) {
             (Show-Value $procedure['code'] 'code')
             (Show-Value $procedure['status'] 'status')
             (Show-Value $procedure['planned_for'] 'planned_for')
-            (Show-Value $procedure['pre_op_outstanding'] 'pre_op_outstanding')
+            (Show-Flag $procedure['pre_op_outstanding'] 'pre_op_outstanding')
         )
         Write-Output "    planned_procedures[$pi]: $($flags -join ' ')"
         $pi++

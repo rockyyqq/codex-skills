@@ -19,6 +19,8 @@ function Assert-True {
 # Markers that must NOT appear in the view: clinical values.
 $substanceMarker = 'ZZSUBSTANCE' + [guid]::NewGuid().ToString('N').Substring(0, 6)
 $valueMarker = 987.654
+$severityMarker = 'ZZSEVERITY' + [guid]::NewGuid().ToString('N').Substring(0, 6)
+$preOpMarker = 'ZZPREOP' + [guid]::NewGuid().ToString('N').Substring(0, 6)
 
 Set-VaultRecord -Record @{ schema = 3; as_of = '2026-09-18'; people = @{ 'child-a' = @{
     age_band = '5 years'
@@ -68,6 +70,41 @@ Check 'it does NOT leak a condition name' {
     Assert-True ($view -notmatch 'a condition') 'the view leaked a condition name'
 }
 
+# The defect this guards: both of these fields hold sentences in a real record,
+# and the view printed them verbatim while its header said it never emits values.
+$severityVault = Join-Path $env:TEMP ('hv-view-sev-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path (Join-Path $severityVault 'records') -Force | Out-Null
+$env:HEALTH_VAULT_ROOT = $severityVault
+. (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
+    conditions = @(@{ name = 'c'; last_confirmed = '2026-09-18'; severity = "$severityMarker and a longer sentence" })
+    medications = @(); allergies = @(); treatments_tried = @()
+    planned_procedures = @(@{ code='ZZ1'; status='booked'; planned_for='2027-02-01'
+                              pre_op_outstanding = "$preOpMarker free of symptoms for two weeks" })
+    events = @()
+} } }
+$proseView = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\record_view.ps1') 2>&1 | Out-String
+
+Check 'it does NOT leak a severity grade' {
+    Assert-True ($proseView -notmatch $severityMarker) 'the view leaked a severity grade'
+}
+
+Check 'it does NOT leak a pre-operative rule' {
+    Assert-True ($proseView -notmatch $preOpMarker) 'the view leaked a pre-operative rule'
+}
+
+Check 'it reports those prose fields as present rather than absent' {
+    Assert-True ($proseView -match 'severity=present') "severity presence not shown: $proseView"
+    Assert-True ($proseView -match 'pre_op_outstanding=present') "pre-op presence not shown: $proseView"
+}
+
+Check 'a boolean pre-op flag still reports true, not present' {
+    Assert-True ($view -match 'pre_op_outstanding=true') "a boolean flag should report true: $view"
+}
+
+$env:HEALTH_VAULT_ROOT = $severityVault
+Remove-Item -LiteralPath $severityVault -Recurse -Force -ErrorAction SilentlyContinue
+
 Check 'a null section counts as zero, not one' {
     # @($null).Count is 1 in PowerShell. This asserted 1 before and hid the bug.
     $nullDir = Join-Path $env:TEMP ('hv-view-null-' + [guid]::NewGuid().ToString('N'))
@@ -82,6 +119,25 @@ Check 'a null section counts as zero, not one' {
     Assert-True ($out -match 'allergies:\s*0') "a null section should count 0: $out"
     Assert-True ($out -match 'allergies not recorded') "a null section should be named as a gap: $out"
     Remove-Item -LiteralPath $nullDir -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+Check 'a person with no gaps at all says so instead of crashing' {
+    # A bare array return collapses to $null when there are no gaps, and
+    # $null.Count throws under StrictMode - so the clean record was the one case
+    # that broke the view. The comma in record_gaps.ps1 is what stops it.
+    $cleanDir = Join-Path $env:TEMP ('hv-view-clean-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $cleanDir
+    New-Item -ItemType Directory -Path (Join-Path $cleanDir 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = @{
+        relationship = 'self'; conditions = @(); medications = @(); allergies = @()
+        family_history = @(); measurements = @(); lifestyle = @()
+        treatments_tried = @(); planned_procedures = @(); events = @()
+    } } }
+    $out = & pwsh -NoProfile -File (Join-Path $PSScriptRoot '..\scripts\record_view.ps1') 2>&1 | Out-String
+    Assert-True ($out -notmatch 'cannot be found on this object') "the view crashed on a clean record: $out"
+    Assert-True ($out -match 'gaps: none detected') "a clean record should report no gaps: $out"
+    Remove-Item -LiteralPath $cleanDir -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Remove-Item -LiteralPath $env:HEALTH_VAULT_ROOT -Recurse -Force -ErrorAction SilentlyContinue

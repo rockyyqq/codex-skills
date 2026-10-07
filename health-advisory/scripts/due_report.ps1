@@ -18,6 +18,36 @@ $ErrorActionPreference = 'Stop'
 
 Assert-Boundary
 
+# Words that carry no substance. A placeholder entry such as "no known drug
+# allergies" must not be matched against anything, so it reduces to no words and
+# the cross-check skips it.
+$script:ClinicalStopWords = @(
+    'known','none','no','not','nil','drug','drugs','allergy','allergies','allergic',
+    'reaction','recorded','unspecified','unknown','applicable','tested','other',
+    'than','which','when','less','more','with','from','into','that','this','the','and'
+)
+
+function Get-ClinicalWords {
+    param([string]$Text)
+    # A List, not an array. A bare `return @(...)` collapses one match to a
+    # scalar and no matches to $null, and $null.Count throws under StrictMode;
+    # wrapping the caller in @() then double-wraps whatever the comma preserved.
+    # A List is one object, so .Count and .Contains are unambiguous either way.
+    $words = [System.Collections.Generic.List[string]]::new()
+    if (-not $Text) { return $words }
+    $clean = ($Text.ToLower() -replace '[^a-z0-9\u4e00-\u9fff]+', ' ')
+    foreach ($word in ($clean -split '\s+')) {
+        if ($word.Length -lt 4) { continue }
+        if ($script:ClinicalStopWords -contains $word) { continue }
+        if (-not $words.Contains($word)) { $words.Add($word) }
+    }
+    # The leading comma is load-bearing. Returning the List bare lets the pipeline
+    # unroll it: one element becomes a scalar, none becomes $null, and $null.Count
+    # throws under StrictMode. This is the third shape of the same trap in this
+    # file, after the array-return and the @()-around-a-comma cases.
+    return ,$words
+}
+
 $ledgerPath = Join-Path $PSScriptRoot '..\references\sources.json'
 $todayDate  = if ($Today) { [datetime]::ParseExact($Today, 'yyyy-MM-dd', $null) } else { Get-Date }
 if (-not $OutDir) { $OutDir = Join-Path $script:VaultRoot 'reports' }
@@ -37,6 +67,7 @@ if (Test-Path -LiteralPath $ledgerPath) {
 }
 
 $facts = @(); $assumptions = @(); $unknown = @(); $people = 0
+$nextDue = $null
 $record = Get-VaultRecord
 if ($record -and $record['people']) {
     $people = $record['people'].Keys.Count
@@ -61,6 +92,25 @@ if ($record -and $record['people']) {
             }
         }
 
+        # A recorded allergy and a recorded medication sharing a word is a fact, not
+        # a judgement. It is deliberately a word match on what is written down: it
+        # is not an interaction check - that is a label question - and finding no
+        # match clears nothing.
+        foreach ($allergy in @($person['allergies'])) {
+            if (-not $allergy) { continue }
+            $allergyWords = Get-ClinicalWords -Text $allergy['substance']
+            if (-not $allergyWords.Count) { continue }
+            foreach ($medication in @($person['medications'])) {
+                if (-not $medication) { continue }
+                $medicationWords = Get-ClinicalWords -Text $medication['name']
+                if (-not $medicationWords.Count) { continue }
+                $shared = @($allergyWords | Where-Object { $medicationWords.Contains($_) })
+                if ($shared.Count) {
+                    $facts += "- $personKey / a recorded allergy and a recorded medication share the word '$($shared[0])': '$($allergy['substance'])' against '$($medication['name'])'"
+                }
+            }
+        }
+
         foreach ($event in @($person['events'])) {
             # A null section yields @($null), which is one null element, not zero.
             if (-not $event) { continue }
@@ -71,6 +121,10 @@ if ($record -and $record['people']) {
                 $line = "- $personKey / $($event['code']): due $($dueOn.ToString('yyyy-MM-dd'))"
                 if ($event['basis'] -eq 'assumption') { $assumptions += $line } else { $facts += $line }
             }
+            # The next review date is computed from the earliest sourced interval,
+            # not fixed to a calendar month. An interval nobody has sourced cannot
+            # produce a date, which is why that case is reported as a gap.
+            elseif ($null -eq $nextDue -or $dueOn -lt $nextDue) { $nextDue = $dueOn }
         }
     }
 }
@@ -105,10 +159,21 @@ $lines = @(
     "",
     $(if ($cannotJudge.Count) { $cannotJudge -join "`n" } else { "- nothing outstanding" }),
     "",
+    "## Next review",
+    "",
+    $(if ($nextDue) { "Earliest item coming due: **$($nextDue.ToString('yyyy-MM-dd'))**" } else { "No event carries both a last-done date and a sourced interval, so no next date can be computed. That is a gap in the record, not a clean bill." }),
+    "",
+    "## Retention",
+    "",
+    "Kept in the vault's reports folder until the next review replaces it; a",
+    "superseded review may then be deleted. It carries no identifiers.",
+    "",
     "## What this is not",
     "",
     "Date-based items were checked against dated sources. Conditions were **not**",
     "assessed, nothing was examined, and no conclusion about a person was drawn.",
+    "The allergy-and-medication check is a word match on what is recorded; it is",
+    "not an interaction check, and finding no match clears nothing.",
     "These checks being up to date does not mean anyone is healthy.",
     ""
 )
@@ -123,4 +188,5 @@ Write-Output "people: $people"
 Write-Output "due (facts): $($facts.Count)"
 Write-Output "to raise: $($assumptions.Count)"
 Write-Output "cannot judge: $($cannotJudge.Count)"
+Write-Output "next review: $(if ($nextDue) { $nextDue.ToString('yyyy-MM-dd') } else { 'none computable' })"
 Write-Output "report: $reportPath"

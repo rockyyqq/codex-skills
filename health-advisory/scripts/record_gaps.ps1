@@ -31,5 +31,9 @@ function Get-RecordGaps {
         if (-not $event) { continue }
         if (-not $event['interval_months']) { $gaps += 'a screening event has no sourced interval' }
     }
-    return @($gaps | Select-Object -Unique)
+    # The leading comma matters. A bare `return @(...)` writes the array to the
+    # pipeline, and a one-element array unwraps to a scalar while an empty one
+    # arrives as $null - so `$gaps.Count` throws under StrictMode on exactly the
+    # person with no gaps at all. The comma emits the array as one object.
+    return ,@($gaps | Select-Object -Unique)
 }

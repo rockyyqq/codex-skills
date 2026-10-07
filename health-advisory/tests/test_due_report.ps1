@@ -76,6 +76,65 @@ Check 'the written report names the overdue item' {
     Assert-True ($body -match 'demo-test') 'the report does not name the overdue item'
 }
 
+Check 'the report states a retention and the next review date' {
+    $files = @(Get-ChildItem (Join-Path $env:HEALTH_VAULT_ROOT 'reports') -Filter '*-review.md')
+    $body = Get-Content -LiteralPath $files[0].FullName -Raw
+    Assert-True ($body -match '## Retention') 'the report does not state a retention'
+    Assert-True ($body -match '## Next review') 'the report does not state the next review'
+}
+
+Check 'the next review date comes from the sourced interval, not the calendar' {
+    # The fixture's item was last done 2020-01-01 with a 12-month interval, so it
+    # is overdue and no future date exists. A second, future-dated item proves the
+    # date is computed rather than assumed from today.
+    $future = Join-Path $env:TEMP ('hv-future-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $future
+    New-Item -ItemType Directory -Path (Join-Path $future 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = (Complete-Person @{
+        events = @(@{ id='E9'; kind='screening'; code='future-test'
+                      last_done = '2026-08-01'; interval_months = 12; basis = 'fact' })
+    }) } }
+    $out = & pwsh -NoProfile -File $dueScript 2>&1 | Out-String
+    Assert-True ($out -match 'next review:\s*2027-08-01') "expected the computed date, got: $out"
+    Remove-Item -LiteralPath $future -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+Check 'an allergy and a medication sharing a word become a fact' {
+    $share = Join-Path $env:TEMP ('hv-share-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $share
+    New-Item -ItemType Directory -Path (Join-Path $share 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    $word = 'zz' + [guid]::NewGuid().ToString('N').Substring(0, 8)
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'adult-a' = (Complete-Person @{
+        allergies   = @(@{ substance = $word; reaction = 'a rash'; last_confirmed = '2026-09-18' })
+        medications = @(@{ name = $word; source = 'memory' })
+    }) } }
+    $out = & pwsh -NoProfile -File $dueScript 2>&1 | Out-String
+    Assert-True ($out -match 'status:\s*DUE') "the shared word did not raise a fact: $out"
+    Assert-True ($out -notmatch $word) 'stdout leaked the shared word itself'
+    $files = @(Get-ChildItem (Join-Path $share 'reports') -Filter '*-review.md')
+    $body = Get-Content -LiteralPath $files[0].FullName -Raw
+    Assert-True ($body -match $word) 'the report did not name the shared word'
+    Remove-Item -LiteralPath $share -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+Check 'a placeholder allergy is not matched against anything' {
+    # "no known drug allergies" is a placeholder, not a substance. Matching it
+    # would put a false fact in the review and teach the reader to distrust it.
+    $placeholder = Join-Path $env:TEMP ('hv-ph-' + [guid]::NewGuid().ToString('N'))
+    $env:HEALTH_VAULT_ROOT = $placeholder
+    New-Item -ItemType Directory -Path (Join-Path $placeholder 'records') -Force | Out-Null
+    . (Join-Path $PSScriptRoot '..\scripts\vault.ps1')
+    Set-VaultRecord -Record @{ schema = 3; people = @{ 'child-a' = (Complete-Person @{
+        allergies   = @(@{ substance = 'no known drug allergies'; reaction = 'not applicable'; last_confirmed = '2026-09-18' })
+        medications = @(@{ name = 'vonoprazan'; source = 'label' })
+    }) } }
+    $out = & pwsh -NoProfile -File $dueScript 2>&1 | Out-String
+    Assert-True ($out -match 'status:\s*OK') "a placeholder produced a fact: $out"
+    Remove-Item -LiteralPath $placeholder -Recurse -Force -ErrorAction SilentlyContinue
+}
+
 Check 'an unrecorded field makes the review CANNOT JUDGE, not DUE' {
     $incomplete = Join-Path $env:TEMP ('hv-inc-' + [guid]::NewGuid().ToString('N'))
     $env:HEALTH_VAULT_ROOT = $incomplete

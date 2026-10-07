@@ -27,6 +27,7 @@ EVIDENCE_REQUIRED = (
     ("Last 12 months", "no recency block"),
     ("Sources", "no Sources block"),
     ("http", "no resolvable source link"),
+    ("Retention", "no retention statement"),
 )
 
 # A household review is a different document from an evidence report, and
@@ -37,7 +38,25 @@ REVIEW_REQUIRED = (
     ("## Assumption-dependent", "no assumption-dependent section"),
     ("## Cannot judge", "no Cannot-judge section"),
     ("status:", "no status line"),
+    ("Retention", "no retention statement"),
 )
+
+# A consultation pack is a third document again: who owns the question, what to
+# bring, what to ask. Demanding an Evidence section of it fails a correct pack
+# for the same reason it failed a correct review.
+PACK_REQUIRED = (
+    ("Who to see", "no lens block (who owns the question)"),
+    ("What to bring", "no bring block"),
+    ("Questions to ask", "no questions block"),
+    ("Retention", "no retention statement"),
+)
+
+# One table, so a new kind cannot be added to the stamp and forgotten here.
+REQUIRED = {
+    "evidence": EVIDENCE_REQUIRED,
+    "review": REVIEW_REQUIRED,
+    "pack": PACK_REQUIRED,
+}
 
 
 def detect_kind(text):
@@ -45,8 +64,10 @@ def detect_kind(text):
 
     A document with neither falls through to evidence, which has the stricter
     required list - an unrecognised report fails closed rather than passing.
+    A pack is recognised only from its stamp, so that an unstamped pack fails
+    against the evidence list rather than passing on two lucky headings.
     """
-    stamped = re.search(r"<!--\s*kind:\s*(evidence|review)\s*-->", text)
+    stamped = re.search(r"<!--\s*kind:\s*(evidence|review|pack)\s*-->", text)
     if stamped:
         return stamped.group(1)
     lowered = text.lower()
@@ -60,7 +81,7 @@ def detect_kind(text):
 def check(text, kind=None):
     """Return a list of problems. An empty list means the report passes."""
     kind = kind or detect_kind(text)
-    required = REVIEW_REQUIRED if kind == "review" else EVIDENCE_REQUIRED
+    required = REQUIRED[kind]
     found = []
     # Case-insensitive: a section heading or a status line may be capitalised,
     # and a gate that fails on capitalisation is a gate people learn to bypass.
@@ -77,7 +98,7 @@ def check(text, kind=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("report")
-    parser.add_argument("--kind", choices=("evidence", "review"), default=None,
+    parser.add_argument("--kind", choices=("evidence", "review", "pack"), default=None,
                         help="override the detected report kind")
     args = parser.parse_args(argv)
 

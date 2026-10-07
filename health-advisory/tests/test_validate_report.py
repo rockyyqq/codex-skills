@@ -15,6 +15,8 @@ CLEAN = """# Household review
 
 **Sources**
 - https://www.moh.gov.sg/ (verified 2026-09-18)
+
+Retention: superseded by the next report.
 """
 
 CLEAN_REVIEW = """# Household review — 2026-09-18
@@ -33,9 +35,31 @@ CLEAN_REVIEW = """# Household review — 2026-09-18
 
 - nothing outstanding
 
+Retention: replaced by the next review.
+
 ## What this is not
 
 These checks being up to date does **not** mean anyone is healthy.
+"""
+
+CLEAN_PACK = """<!-- kind: pack -->
+# Consultation pack — 2026-09-18
+
+## adult-a
+
+### Who to see
+
+An ENT, or the doctor named in the record.
+
+### What to bring
+
+- the timeline, dated 2026-02
+
+### Questions to ask
+
+- whether the nose and throat findings are one problem or two
+
+Retention: replaced by the next pack.
 """
 
 
@@ -109,6 +133,48 @@ def test_a_national_id_in_a_review_is_filtered_not_ignored():
     assert any("national ID" in problem for problem in found), found
 
 
+def test_a_correct_pack_passes():
+    assert vr.check(CLEAN_PACK) == []
+
+
+def test_a_pack_is_detected_from_its_stamp():
+    assert vr.detect_kind(CLEAN_PACK) == "pack"
+
+
+def test_a_pack_missing_the_questions_block_is_rejected():
+    found = vr.check(CLEAN_PACK.replace("### Questions to ask", "### Notes"))
+    assert any("questions block" in problem for problem in found), found
+
+
+def test_a_pack_missing_the_bring_block_is_rejected():
+    found = vr.check(CLEAN_PACK.replace("### What to bring", "### Notes"))
+    assert any("bring block" in problem for problem in found), found
+
+
+def test_an_unstamped_pack_fails_closed_as_evidence():
+    unstamped = CLEAN_PACK.replace("<!-- kind: pack -->\n", "")
+    assert vr.detect_kind(unstamped) == "evidence"
+    assert vr.check(unstamped) != []
+
+
+def test_identifiers_are_filtered_in_a_pack_too():
+    found = vr.check(CLEAN_PACK + "\nS1234567D\n")
+    assert any("national ID" in problem for problem in found), found
+
+
+def test_a_pack_cannot_assert_a_diagnosis():
+    found = vr.check(CLEAN_PACK + "\nyou likely have influenza\n")
+    assert any("diagnostic assertion" in problem for problem in found), found
+
+
+def test_every_kind_requires_a_retention_statement():
+    # The boundary document says reports carry a stated retention, and a rule
+    # enforced for one report kind is a rule the next kind quietly escapes.
+    for kind, text in (("evidence", CLEAN), ("review", CLEAN_REVIEW), ("pack", CLEAN_PACK)):
+        found = vr.check(text.replace("Retention", "Note"))
+        assert any("retention" in problem for problem in found), (kind, found)
+
+
 check("a clean report passes", test_a_clean_report_passes)
 check("a national ID is rejected", test_a_national_id_is_rejected)
 check("an email is rejected", test_an_email_is_rejected)
@@ -122,6 +188,14 @@ check("an evidence report is detected as evidence", test_an_evidence_report_is_d
 check("a kind stamp beats inference", test_a_kind_stamp_beats_inference)
 check("a review missing Cannot-judge is rejected", test_a_review_missing_the_cannot_judge_section_is_rejected)
 check("identifiers are filtered in a review too", test_a_national_id_in_a_review_is_filtered_not_ignored)
+check("a correct pack passes", test_a_correct_pack_passes)
+check("a pack is detected from its stamp", test_a_pack_is_detected_from_its_stamp)
+check("a pack missing Questions is rejected", test_a_pack_missing_the_questions_block_is_rejected)
+check("a pack missing What to bring is rejected", test_a_pack_missing_the_bring_block_is_rejected)
+check("an unstamped pack fails closed as evidence", test_an_unstamped_pack_fails_closed_as_evidence)
+check("identifiers are filtered in a pack too", test_identifiers_are_filtered_in_a_pack_too)
+check("a pack cannot assert a diagnosis", test_a_pack_cannot_assert_a_diagnosis)
+check("every kind requires a retention statement", test_every_kind_requires_a_retention_statement)
 
 if FAILURES:
     print(f"\n{len(FAILURES)} check(s) failed")
